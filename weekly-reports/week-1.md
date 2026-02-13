@@ -9,7 +9,7 @@
 ## 1. Công việc đã hoàn thành
 
 | Thành viên           | MSSV       | Công việc                          | Link commit/PR |
-|-----------------------------------------------------------------------------------------|
+|----------------------|------------|------------------------------------|----------------|
 | Ngô Hoàng Kiều Trang | 2354050141 | Phân chia công việc, viết chương 1 |        /       |
 | Trần Văn Trạng       | 2351050185 | Phân tích yêu cầu chức năng        |        /       |
 | Nguyễn Thanh Thuận   | 2351010203 | Phân tích yêu cầu phi chức năng    |        /       |
@@ -19,7 +19,7 @@
 ## 2. Tiến độ tổng thể
 
 | Hạng mục             | Trạng thái |   %   |
-|-------------------------------------------|
+|----------------------|------------|-------|
 | Chương 1 báo cáo     | Done       | 100 % |
 | Phân tích yêu cầu    | On Going   | 30 %  |
 | Thiết kế kiến trúc   | Unstarted  | 0 %   |
@@ -34,7 +34,7 @@
 
 ## 3. Kế hoạch tuần tới
 | Thành viên           | MSSV       | Công việc dự kiến                                                        |
-|--------------------------------------------------------------------------------------------------------------|
+|----------------------|------------|--------------------------------------------------------------------------|
 | Ngô Hoàng Kiều Trang | 2354050141 | Thiết kế actor và use cases                                              |
 | Trần Văn Trạng       | 2351050185 | Hoàn thành phân tích yêu cầu chức năng và tìm hiểu các mẫu kiến trúc     |
 | Nguyễn Thanh Thuận   | 2351010203 | Hoàn thành phân tích yêu cầu phi chức năng và tìm hiểu các mẫu kiến trúc |
