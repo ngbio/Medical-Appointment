@@ -1,0 +1,39 @@
+@startuml Medical Context
+title Medical Context
+!ROUNDED_STYLE=1
+
+!include  https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+' LAYOUT_TOP_DOWN()
+LAYOUT_LEFT_RIGHT()
+
+Person(patient, "Patient", "A person who receives medical care.")
+Person(doctor, "Doctor", "A medical professional who provides care to patients.")
+Person(receptionist, "Receptionist", "A person who manages appointments and patient records.")
+Person(admin, "Admin", "A person who manages the medical system and oversees operations.")
+
+System(appointments, "Medical Appointment System", "A system that manages patient appointments, doctor schedules, and medical records.")
+
+System_Ext(auth, "Authentication Service", "A service that handles user authentication and authorization.")
+System_Ext(email, "Email Service", "A service that sends notifications and reminders to patients and doctors.")
+
+Rel(patient, appointments, "Books appointments")
+Rel(patient, appointments, "Manages personal information")
+Rel(patient, appointments, "Searchs doctors and services")
+
+Rel(doctor, appointments, "View daily schedule")
+Rel(doctor, appointments, "View patient appointments list")
+
+Rel(receptionist, appointments, "Creates and updates appointments for patients")
+Rel(receptionist, appointments, "Manages appointment and patient information")
+
+Rel(admin, appointments, "Manages doctors and specialties")
+Rel(admin, appointments, "Manages system configuration")
+
+Rel(appointments, auth, "Uses authentication")
+Rel(appointments, email, "Sends notifications")
+
+Rel(email, patient, "Sends email to")
+
+' SHOW_LEGEND()
+@enduml
