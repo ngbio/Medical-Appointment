@@ -1,0 +1,25 @@
+@startuml
+
+!ROUNDED_STYLE=1
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Medical Appointment System - Server Side
+
+System_Boundary(medical_appointment_system, "Medical Appointment System") {
+    
+    Container(web_client, "Web Client", "Web Application (React, Bootstrap 5)", "Runs in the browser, provides user interface and communicates with the Backend via REST APIs.")
+    
+    Container(backend_app, "Backend Application", "Django", "Provides REST APIs, handles authentication, authorization, and business logic processing.")
+    
+    ContainerDb(database, "Relational Database", "MySQL", "Stores users, doctor schedules, appointments, medical records, and system configuration.")
+}
+
+System_Ext(email_service, "Email Service", "A service that sends notifications and reminders to patients and doctors.")
+
+Rel(web_client, backend_app, "Sends API requests to", "HTTPS/JSON")
+
+Rel(backend_app, database, "Reads from and writes to", "SQL / TCP")
+
+Rel(backend_app, email_service, "Triggers emails/notifications via", "HTTPS/API")
+@enduml
