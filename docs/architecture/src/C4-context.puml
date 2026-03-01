@@ -2,7 +2,7 @@
 title Medical Context
 !ROUNDED_STYLE=1
 
-!include  https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
 ' LAYOUT_TOP_DOWN()
 LAYOUT_LEFT_RIGHT()

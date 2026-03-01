@@ -1,0 +1,31 @@
+@startuml Medical Container
+title Medical Appointment System
+!ROUNDED_STYLE=1
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_LEFT_RIGHT()
+
+
+Person(patient, "Patient", "Books and manages medical appointments")
+Person(doctor, "Doctor", "Views and manages schedules")
+Person(admin, "Administrator", "Manages users and system configuration")
+Person(receptionist, "Receptionist", "Assists patients and manages appointment bookings")
+
+System_Boundary(system, "Medical Appointment System") {
+    Container(web, "Web Application","React/Bootstrap 5","Runs in the browser, provides user interface and communicates with the Backend via REST APIs")
+    Container(backend_app, "Backend Application", "Django", "Provides REST APIs, handles authentication, authorization, and business logic processing.")
+    ContainerDb(database, "Relational Database", "MySQL", "Stores users, doctor schedules, appointments, medical records, and system configuration.")
+}
+
+System_Ext(email_service, "Email Service", "A service that sends notifications and reminders to patients and doctors.")
+
+Rel(patient, web, "Book appointments, manage profile", "HTTPS")
+Rel(doctor, web, "View schedules and manage appointments", "HTTPS")
+Rel(admin, web, "Manage users, schedules, and system settings", "HTTPS")
+Rel(receptionist, web, "Create and manage appointments for patients", "HTTPS")
+
+Rel(web, backend_app, "Sends API requests to", "HTTPS/JSON")
+Rel(backend_app, database, "Reads from and writes to", "SQL / TCP")
+Rel(backend_app, email_service, "Triggers emails/notifications via", "HTTPS/API")
+Rel(email_service, patient, "Sends notifications to", "Email")
+
+@enduml
