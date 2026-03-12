@@ -17,8 +17,9 @@ System_Boundary(system, "Medical Appointment System") {
         
 
         'appointment - schedule: thuận'
-        
-        
+        Component(appointment_api, "Appointment API", "Django REST", "Provides APIs to book, cancel and view medical appointments")
+        Component(schedule_api, "Schedule API", "Django REST", "Provides APIs to manage and view doctor schedules")
+
         'admin - medical: trang'
         
         
@@ -37,7 +38,9 @@ System_Boundary(system, "Medical Appointment System") {
 
 
 ' appointment - schedule: thuận'
-
+Rel(ui, appointment_api, "Manages appointments", "HTTPS / JSON")
+Rel(ui, schedule_api, "Views doctor schedules", "HTTPS / JSON")
+Rel(appointment_api, schedule_api, "Checks doctor availability")
 
 ' admin - medical: trang'
 
