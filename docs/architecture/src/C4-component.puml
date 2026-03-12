@@ -1,0 +1,51 @@
+@startuml Medical_Appointment_System_Component
+title Medical Appointment System - Component Diagram
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!ROUNDED_STYLE=1
+LAYOUT_LEFT_RIGHT()
+LAYOUT_TOP_DOWN()
+
+
+System_Boundary(system, "Medical Appointment System") {
+    Container(ui, "Web UI", "React / HTML / CSS / JavaScript", "Single Page Application that interacts with backend REST APIs")
+
+    Container_Boundary(backend, "Backend"){
+        'auth - patient: trạng'
+        
+
+        'appointment - schedule: thuận'
+        
+        
+        'admin - medical: trang'
+        
+        
+        'message - notification: trang'
+        
+        
+    }
+    'database: trạng'
+    
+}
+
+'message queue: trang'
+
+
+' auth - patient: trạng '
+
+
+' appointment - schedule: thuận'
+
+
+' admin - medical: trang'
+
+
+' Asynchoronous Comunication: trang'
+
+
+' database: trạng'
+
+
+@enduml
