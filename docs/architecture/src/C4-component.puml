@@ -14,11 +14,13 @@ System_Boundary(system, "Medical Appointment System") {
 
     Container_Boundary(backend, "Backend"){
         'auth - patient: trạng'
-        
+        Component(auth_api, "Authentication API", "Django REST", "Provides authentication and authorization APIs")
+        Component(patient_api, "Patient Profile API", "Django REST", "Provides APIs to manage patient personal information and medical history")
 
         'appointment - schedule: thuận'
-        
-        
+        Component(appointment_api, "Appointment API", "Django REST", "Provides APIs to book, cancel and view medical appointments")
+        Component(schedule_api, "Schedule API", "Django REST", "Provides APIs to manage and view doctor schedules")
+
         'admin - medical: trang'
         
         
@@ -27,17 +29,20 @@ System_Boundary(system, "Medical Appointment System") {
         
     }
     'database: trạng'
-    
+    ContainerDb(database, "Relational Database", "MySQL", "Stores users, doctor schedules, appointments, medical records, and system configuration.")
 }
 
 'message queue: trang'
 
 
 ' auth - patient: trạng '
-
+Rel(ui, auth_api, "Authenticates users", "HTTPS / JSON")
+Rel(ui, patient_api, "Manages patient profile", "HTTPS / JSON")
 
 ' appointment - schedule: thuận'
-
+Rel(ui, appointment_api, "Manages appointments", "HTTPS / JSON")
+Rel(ui, schedule_api, "Views doctor schedules", "HTTPS / JSON")
+Rel(appointment_api, schedule_api, "Checks doctor availability")
 
 ' admin - medical: trang'
 
@@ -46,6 +51,11 @@ System_Boundary(system, "Medical Appointment System") {
 
 
 ' database: trạng'
-
+Rel(auth_api, database, "Reads/Writes authentication data")
+Rel(patient_api, database, "Reads/Writes patient profile data")
+Rel(appointment_api, database, "Reads/Writes appointment data")
+Rel(schedule_api, database, "Reads/Writes schedule data")
+Rel(medical_api, database, "Reads/Writes medical record data")
+Rel(admin_api, database, "Reads/Writes doctor and specialty data")
 
 @enduml
