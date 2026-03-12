@@ -22,10 +22,12 @@ System_Boundary(system, "Medical Appointment System") {
         Component(schedule_api, "Schedule API", "Django REST", "Provides APIs to manage and view doctor schedules")
 
         'admin - medical: trang'
-        
+        Component(medical_api, "Medical Record API", "Django REST" ,"Provides APIs to manage medical records and diagnosis information")
+        Component(admin_api, "Doctor & Specialty Management API", "Django REST", "Provides APIs to manage doctors and medical specialties")
         
         'message - notification: trang'
-        
+        Component(message_producer, "Message Producer", "Celery Client", "Publishes events for asynchronous processing")
+        Component(notification_worker, "Notification Worker", "Celery Worker", "Processes background tasks such as sending notifications")
         
     }
     'database: trạng'
@@ -33,7 +35,8 @@ System_Boundary(system, "Medical Appointment System") {
 }
 
 'message queue: trang'
-
+System_Ext(message_queue, "Message Queue (RabbitMQ)", "Delivers messages for asynchronous communication")
+System_Ext(email_service, "Email Service", "Sends email notifications to users")
 
 ' auth - patient: trạng '
 Rel(ui, auth_api, "Authenticates users", "HTTPS / JSON")
@@ -45,10 +48,14 @@ Rel(ui, schedule_api, "Views doctor schedules", "HTTPS / JSON")
 Rel(appointment_api, schedule_api, "Checks doctor availability")
 
 ' admin - medical: trang'
-
+Rel(ui, medical_api, "View medical records", "HTTPS / JSON")
+Rel(ui, admin_api, "Manages doctors and specialties", "HTTPS / JSON")
 
 ' Asynchoronous Comunication: trang'
-
+Rel(appointment_api, message_producer, "Publishes appointment events (confirmation, reminder)")
+Rel(message_producer, message_queue, "Sends messages", "AMQP")
+Rel(notification_worker, message_queue, "Delivers messages", "AMQP")
+Rel(notification_worker, email_service, "Sends notification emails")
 
 ' database: trạng'
 Rel(auth_api, database, "Reads/Writes authentication data")
