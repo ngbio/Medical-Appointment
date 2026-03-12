@@ -4,7 +4,6 @@
 
 ## Bối cảnh hệ thống
 
-
 Hệ thống đặt lịch khám cần lưu trữ nhiều loại dữ liệu cốt lõi có mối quan hệ chặt chẽ với nhau, bao gồm:
 
   * User accounts 
