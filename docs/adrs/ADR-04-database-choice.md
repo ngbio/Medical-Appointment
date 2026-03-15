@@ -1,4 +1,4 @@
-# ADR-05: Relational Database for Persistent Data Storage
+# ADR-04: Relational Database for Persistent Data Storage
 
   ## **Status:** `Accepted`
 

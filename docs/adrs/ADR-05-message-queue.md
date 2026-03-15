@@ -1,4 +1,4 @@
-# ADR-06: Message Queue for Asynchronous Processing
+# ADR-05: Message Queue for Asynchronous Processing
 ## Status
 Accepted
 
