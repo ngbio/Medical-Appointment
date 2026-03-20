@@ -14,6 +14,10 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+USE_CLOUDINARY = True
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 
 # Quick-start development settings - unsuitable for production
@@ -37,6 +41,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ckeditor',
+    'drf_yasg',
+    'ckeditor_uploader',
+    'cloudinary',
+    'rest_framework',
+    'oauth2_provider',
+    'users',
+    'doctors',
+    'appointments',
+    'notifications', 
+
 ]
 
 MIDDLEWARE = [
@@ -48,6 +63,22 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ('oauth2_provider.contrib.rest_framework.OAuth2Authentication',),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
+    'PAGE_SIZE': 5,
+}
+
+import cloudinary.api
+
+cloudinary.config(
+    cloud_name='dxfbpkmen',
+    api_key='771652583444831',
+    api_secret='EwZYOpA4n19unyDcRFEDBud6LBA'
+)
+
+CKEDITOR_UPLOAD_PATH = "images/ckeditors/"
 
 ROOT_URLCONF = 'src.urls'
 
@@ -74,8 +105,12 @@ WSGI_APPLICATION = 'src.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'medicaldb',
+        'USER': 'root',
+        'PASSWORD': 'Nhinho3008',
+        'HOST': '127.0.0.1',  # mặc định localhost
+        'PORT': '3306',
     }
 }
 
@@ -98,6 +133,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# import pymysql
+
+# pymysql.install_as_MySQLdb()
+
+AUTH_USER_MODEL = 'users.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -120,3 +160,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CLIENT_ID = ''
+CLIENT_SECRET = ''
