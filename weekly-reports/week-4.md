@@ -1,6 +1,6 @@
-# Báo cáo Tuần 3
+# Báo cáo Tuần 4
 
-**Tuần:** 3 (12/03/2026 - 19/03/2026)
+**Tuần:** 4 (12/03/2026 - 19/03/2026)
 
 **Nhóm:** 2
 
@@ -32,7 +32,7 @@
 | Docker               | Unstarted  | 0 %   |
 | Testing              | Unstarted  | 0 %   |
 
-**Tổng tiến độ:** 20 %
+**Tổng tiến độ:** 50 %
 
 ---
 
@@ -40,14 +40,14 @@
 
 | Thành viên           | MSSV       | Công việc dự kiến                 |
 |----------------------|------------|-----------------------------------|
-| Ngô Hoàng Kiều Trang | 2354050141 | Thực hiện viết ADR message queue |
-| Trần Văn Trạng       | 2351050185 | Xây dựng database |
-| Nguyễn Thanh Thuận   | 2351010203 | Thực hiện viết các ADRs architecture |
+| Ngô Hoàng Kiều Trang | 2354050141 | Xây dựng database + Doctor Domain |
+| Trần Văn Trạng       | 2351050185 | Patient Domain |
+| Nguyễn Thanh Thuận   | 2351010203 | Admin + System Domain |
 
 ## 4. Khó khăn / Cần hỗ trợ
 
 ---
-*Ngày nộp: 19/03/2026*
+*Ngày nộp: 23/03/2026*
 *Xác nhận của nhóm trưởng: Ngô Hoàng Kiều Trang*
 
 
