@@ -4,7 +4,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from users.models import User
 from users import serializers
-
+from django.contrib.auth import logout, authenticate, login
+from django.shortcuts import redirect
+from oauth2_provider.models import Application, AccessToken
+from django.utils import timezone
+from datetime import timedelta
+import secrets
 
 # Create your views here.
 class UserView(viewsets.ViewSet, generics.CreateAPIView):
@@ -17,8 +22,20 @@ class UserView(viewsets.ViewSet, generics.CreateAPIView):
         u = request.user
         if request.method.__eq__('PATCH'):
             for k, v in request.data.items():
-                if k in ['fullname', 'phhone_number', 'email']:
+                if k in ['first_name', 'last_name', 'email']:
                     setattr(u, k, v)
             u.save()
         return Response(serializers.UserSerializer(u).data, status=status.HTTP_200_OK)
+
+
+def login_page(request):
+    return render(request, "index.html")
+
+def logout_view(request):
+    """Handle logout and redirect to login page"""
+    logout(request)
+    return redirect('/login')
+
+def index_page(request):
+    return render(request, "index.html")
 
