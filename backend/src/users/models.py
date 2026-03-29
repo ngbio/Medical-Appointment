@@ -14,8 +14,8 @@ class GenderEnum(models.TextChoices):
 
 AbstractUser.username.field.error_messages['unique'] = 'Tên đăng nhập đã tồn tại!'
 class User(AbstractUser):
-    fullname = models.CharField(max_length=255)
-    phhone_number = models.CharField(max_length=10)
+    fullname = models.CharField(max_length=255, null=True, blank=True)
+    phone_number = models.CharField(max_length=10)
     gender = models.CharField(max_length=10, choices=GenderEnum.choices)
     role = models.CharField(max_length=20, choices=RoleEnum.choices, default=RoleEnum.PATIENT)
     created_at = models.DateTimeField(auto_now_add=True)

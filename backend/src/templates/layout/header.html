@@ -1,0 +1,151 @@
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow"
+     style="background: linear-gradient(90deg, #0177fe, #0d6efd);">
+
+    <div class="container">
+
+        <a class="navbar-brand fw-bold p-3" href="/">Nha Khoa Việt Nam</a>
+
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold" href="/">Trang chủ</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold" href="/doctors">Bác sĩ</a>
+                </li>
+
+                <li class="nav-item" id="appointmentMenu">
+                    <a class="nav-link fw-semibold" href="/appointment">Đặt lịch khám</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold" href="/services">Dịch vụ</a>
+                </li>
+
+                <li class="nav-item" id="invoiceMenu" style="display:none">
+                    <a class="nav-link fw-semibold" href="/invoice">Lập hóa đơn</a>
+                </li>
+
+                <li class="nav-item dropdown ms-lg-3">
+
+                    <a class="nav-link dropdown-toggle btn btn-outline-light px-3"
+                       href="#"
+                       role="button"
+                       data-bs-toggle="dropdown">
+                        Tài khoản
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded-3">
+
+                        <!-- guest -->
+                        <div id="guestMenu">
+
+                            <li><a class="dropdown-item" href="/login">Đăng nhập</a></li>
+                            <li><a class="dropdown-item" href="/register">Đăng ký</a></li>
+
+                        </div>
+
+                        <!-- user -->
+                        <div id="userMenu" style="display:none">
+
+                            <li class="dropdown-header text-center fw-bold" id="username"></li>
+
+                            <li id="adminMenu" style="display:none">
+                                <a class="dropdown-item" href="/admin">Trang quản trị</a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item" href="/user">Thông tin tài khoản</a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item" id="appointmentList" href="/appointments">
+                                    Lịch khám
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item" href="/password">Đổi mật khẩu</a>
+                            </li>
+
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item text-danger"
+                                   href="#"
+                                   onclick="handleLogout()">Đăng xuất</a>
+                            </li>
+
+                        </div>
+
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<script>
+document.addEventListener("DOMContentLoaded", async function(){
+
+    const token = localStorage.getItem("access_token");
+
+    if(!token)
+        return;
+
+    const guestMenu = document.getElementById("guestMenu");
+    const userMenu = document.getElementById("userMenu");
+
+    guestMenu.style.display = "none";
+    userMenu.style.display = "block";
+
+    try{
+
+        const res = await fetch("/users/current_user/",{
+            headers:{
+                "Authorization": "Bearer " + token
+            }
+        });
+
+        const user = await res.json();
+
+        document.getElementById("username").innerText = user.username;
+
+        // phân quyền
+        if(user.role === "admin"){
+            document.getElementById("adminMenu").style.display = "block";
+        }
+
+        if(user.role === "receptionist"){
+            document.getElementById("invoiceMenu").style.display = "block";
+        }
+
+        if(user.role === "doctor"){
+            document.getElementById("appointmentMenu").style.display = "none";
+        }
+
+    }catch(err){
+        console.log(err);
+    }
+
+});
+    function handleLogout(){
+
+    localStorage.removeItem("access_token");
+
+    window.location.href = "/index/";
+    }
+</script>

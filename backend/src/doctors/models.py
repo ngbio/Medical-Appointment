@@ -17,14 +17,14 @@ class DoctorProfile(models.Model):
         return f"Doctor Profile for {self.user.username}"
 
 class DoctorSchedule(models.Model):
-    doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE, related_name='schedules', unique=True)
+    doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE, related_name='schedules')
     work_date = models.DateField()
     start_time = models.TimeField()
     end_time = models.TimeField()
 
 
     def __str__(self):
-        return f"Schedule for {self.doctor.user.username} on {self.date} from {self.start_time} to {self.end_time}"
+        return f"Schedule for {self.doctor.user.username} on {self.work_date} from {self.start_time} to {self.end_time}"
 
 class SlotStatus(models.TextChoices):
     AVAILABLE = 'available', 'Available'
