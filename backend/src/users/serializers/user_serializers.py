@@ -24,10 +24,6 @@ class UserSerializer(serializers.ModelSerializer):
                 u.set_password(password)
             u.save()
 
-            # Auto create patient profile for new user
-            if u.role == RoleEnum.PATIENT:  # double check if the role is patient, just in case
-                PatientProfile.objects.create(user=u)
-
         return u
 
     def update(self, instance, validated_data):
