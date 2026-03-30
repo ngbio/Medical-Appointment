@@ -1,0 +1,160 @@
+{% extends 'base/templates/layout.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center text-info fw-bold mb-4">Thông tin tài khoản</h2>
+
+    <div id="userInfoContainer">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 col-sm-12">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body p-4">
+                        <button type="button" class="btn btn-sm btn-primary position-absolute top-0 end-0 m-2 "><a
+                                href="/user/infor" style="color: white; text-decoration: none;">Sửa</a></button>
+
+                        <div class="text-center mb-4">
+                            <img id="userAvatar" width="128px" height="128px" src="" class="rounded-circle shadow"
+                                 alt="Avatar">
+                        </div>
+
+                        <h4 id="userFullname" class="text-center fw-bold mb-3"></h4>
+
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Tên đăng nhập:</strong> <span id="userUsername"></span></li>
+                            <li class="list-group-item"><strong>Email:</strong> <span id="userEmail"></span></li>
+                            <li class="list-group-item"><strong>Số điện thoại:</strong> <span id="userPhone"></span></li>
+                            <li class="list-group-item"><strong>Giới tính:</strong> <span id="userGender"></span></li>
+                        </ul>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="patientsContainer" class="mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 id="patientsTitle" class="text-info fw-bold mb-0">Hồ sơ bệnh nhân</h2>
+        </div>
+
+        <div id="patientsList" class="row">
+            <!-- Danh sách bệnh nhân sẽ được render ở đây -->
+        </div>
+
+        <div id="patientsEmpty" class="alert alert-danger text-center mt-4" style="display:none;">
+            Không có hồ sơ nào!
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        // Lấy token từ localStorage
+        const token = localStorage.getItem("access_token");
+        
+        if (!token) {
+            document.getElementById('userInfoContainer').innerHTML = 
+                '<div class="alert alert-danger text-center mt-4">Vui lòng đăng nhập để xem thông tin!</div>';
+            document.getElementById('patientsContainer').style.display = 'none';
+            return;
+        }
+
+        // Fetch thông tin user hiện tại với Authorization header
+        const userResponse = await fetch('/users/current-user/', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (userResponse.status === 404) {
+            document.getElementById('userInfoContainer').innerHTML = 
+                '<div class="alert alert-danger text-center mt-4">Tài khoản không hợp lệ!</div>';
+            document.getElementById('patientsContainer').style.display = 'none';
+            return;
+        }
+
+        if (userResponse.status === 401) {
+            document.getElementById('userInfoContainer').innerHTML = 
+                '<div class="alert alert-danger text-center mt-4">Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!</div>';
+            document.getElementById('patientsContainer').style.display = 'none';
+            localStorage.removeItem('access_token');
+            return;
+        }
+
+        if (!userResponse.ok) {
+            throw new Error(`HTTP error! status: ${userResponse.status}`);
+        }
+
+        const userData = await userResponse.json();
+        
+        // Cập nhật thông tin user
+        document.getElementById('userAvatar').src = userData.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(userData.fullname || userData.username || 'User');
+        document.getElementById('userFullname').textContent = userData.fullname || userData.first_name || 'N/A';
+        document.getElementById('userUsername').textContent = userData.username || 'N/A';
+        document.getElementById('userEmail').textContent = userData.email || 'N/A';
+        document.getElementById('userPhone').textContent = userData.phone_number || 'N/A';
+        
+        // Chuyển đổi giới tính
+        const genderMap = {
+            'male': 'Nam',
+            'female': 'Nữ',
+            'm': 'Nam',
+            'f': 'Nữ'
+        };
+        const genderText = genderMap[userData.gender?.toLowerCase()] || userData.gender || 'N/A';
+        document.getElementById('userGender').textContent = genderText;
+
+        // Ẩn phần patients nếu không có dữ liệu
+        document.getElementById('patientsContainer').style.display = 'none';
+
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        document.getElementById('userInfoContainer').innerHTML = 
+            '<div class="alert alert-danger text-center mt-4">Lỗi tải dữ liệu: ' + error.message + '</div>';
+    }
+});
+
+function deletePatient(patientId) {
+    if (confirm('Bạn có chắc muốn xóa hồ sơ bệnh nhân này?')) {
+        const token = localStorage.getItem("access_token");
+        fetch(`/users/patients/${patientId}/`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'X-CSRFToken': getCSRFToken()
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                const patientDiv = document.getElementById(`patient${patientId}`);
+                if (patientDiv) {
+                    patientDiv.remove();
+                }
+            } else {
+                alert('Lỗi xóa bệnh nhân');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+}
+
+function getCSRFToken() {
+    const name = 'csrftoken';
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

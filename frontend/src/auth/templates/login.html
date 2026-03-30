@@ -1,4 +1,4 @@
-{% extends 'layout/base.html' %}
+{% extends 'base/templates/layout.html' %}
 {% load static %}
 
 {% block title %}Đăng nhập{% endblock %}
@@ -40,7 +40,7 @@
 
 </div>
 
-<script src="{% static 'js/login.js' %}"></script>
+<script src="{% static 'auth/js/login.js' %}"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
