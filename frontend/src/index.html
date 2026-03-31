@@ -14,31 +14,12 @@
                     <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="0" class="active"></button>
                     <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="1"></button>
                     <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="2"></button>
-                    <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="3"></button>
                 </div>
 
-                <div>
-                    <H1>Trang chủ nha khoa</H1>
+
+                <div class="carousel-inner" id="carouselInner">
+                    <!-- ảnh sẽ được load bằng JavaScript -->
                 </div>
-
-<!--                <div class="carousel-inner">-->
-<!--                    {% set images = [-->
-<!--                    "portrait-female-dentist_aory6v_c_fill_w_900_h_600_ksvhxa.jpg",-->
-<!--                    "female-dentist-special-glasses-treating-her-patient-s-teeth-with-dental-instruments_ocwmin_c_fill_w_900_h_600_f9slaf.jpg",-->
-<!--                    "empty-stomatology-orthodontist-bright-office-room-with-nobody-it_f74ahj_c_fill_w_900_h_600_u368l6.jpg",-->
-<!--                    "female-dentist-treats-patients-teeth-stomatologist-working-with-professional-equipment_yecmga_c_fill_w_900_h_600_v2yn5x.jpg"-->
-<!--                    ] %}-->
-
-<!--                    {% for img in images %}-->
-<!--                    <div class="carousel-item {% if loop.first %}active{% endif %}">-->
-<!--                        <div class="ratio ratio-16x9">-->
-<!--                            <img src="https://res.cloudinary.com/dt1pa28g2/image/upload/v1765996688/{{ img }}"-->
-<!--                                 class="d-block w-100" style="object-fit: cover;" alt="Nha khoa Việt Nam">-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    {% endfor %}-->
-
-<!--                </div>-->
 
                 <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon"></span>
@@ -58,7 +39,7 @@
 <!-- Slogan -->
 <div class="mt-5 py-3 text-center text-white fw-bold"
      style="background: linear-gradient(90deg, #0177fe, #0d6efd); font-size: 17px;">
-    NHA KHOA TIÊU CHUẨN CHẤT LƯỢNG – ĐỘI NGŨ BÁC SĨ HÀNG ĐẦU VIỆT NAM
+    BỆNH VIỆN TIÊU CHUẨN CHẤT LƯỢNG – ĐỘI NGŨ BÁC SĨ HÀNG ĐẦU VIỆT NAM
 </div>
 
 <!-- Doctors -->
@@ -128,6 +109,29 @@
             alertHome.classList.remove("d-none");
             history.replaceState({}, "", "/");
         }
+
+        // Load carousel images
+        const images = [
+            "img1_gnq4er.jpg",
+            "img3_cjt2ri.jpg",
+            "img2_lj1frj.jpg"
+        ];
+        
+        const carouselInner = document.getElementById('carouselInner');
+        const baseUrl = 'https://res.cloudinary.com/dprwsgoeg/image/upload/v1774936912/';
+        
+        images.forEach((img, index) => {
+            const carouselItem = document.createElement('div');
+            carouselItem.className = 'carousel-item' + (index === 0 ? ' active' : '');
+            
+            carouselItem.innerHTML = `
+                <div class="ratio ratio-16x9">
+                    <img src="${baseUrl}${img}" class="d-block w-100" style="object-fit: cover;" alt="Nha khoa Việt Nam">
+                </div>
+            `;
+            
+            carouselInner.appendChild(carouselItem);
+        });
     });
 </script>
 {% endblock %}

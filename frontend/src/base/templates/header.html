@@ -3,7 +3,7 @@
 
     <div class="container">
 
-        <a class="navbar-brand fw-bold p-3" href="/index">Nha Khoa Việt Nam</a>
+        <a class="navbar-brand fw-bold p-3" href="/index">Bệnh Viện Việt Nam</a>
 
         <button class="navbar-toggler"
                 type="button"
@@ -25,7 +25,7 @@
                 </li>
 
                 <li class="nav-item" id="appointmentMenu">
-                    <a class="nav-link fw-semibold" href="/appointment">Đặt lịch khám</a>
+                    <a class="nav-link fw-semibold" href="/booking">Đặt lịch khám</a>
                 </li>
 
                 <li class="nav-item">
@@ -143,9 +143,14 @@ document.addEventListener("DOMContentLoaded", async function(){
 
 });
     function handleLogout(){
-
-    localStorage.removeItem("access_token");
-
-    window.location.href = "/index/";
+        localStorage.removeItem("access_token");
+        // Gọi Django logout view để xóa server session
+        fetch("/logout/", {method: "GET"})
+            .then(() => {
+                window.location.href = "/index/";
+            })
+            .catch(() => {
+                window.location.href = "/index/";
+            });
     }
 </script>
