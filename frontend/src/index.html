@@ -1,0 +1,97 @@
+{% extends 'base/templates/layout.html' %}
+{% load static %}
+
+{% block title %}Trang chủ{% endblock %}
+
+{% block content %}
+<div id="alert-home" class="alert alert-success text-center mb-4 d-none"></div>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div id="homeCarousel" class="carousel slide carousel-fade shadow rounded-4 overflow-hidden"
+                 data-bs-ride="carousel" data-bs-interval="3000">
+
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="2"></button>
+                </div>
+
+
+                <div class="carousel-inner" id="carouselInner">
+                    <!-- ảnh sẽ được load bằng JavaScript -->
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block other %}
+<!-- Slogan -->
+<div class="mt-5 py-3 text-center text-white fw-bold"
+     style="background: linear-gradient(90deg, #0177fe, #0d6efd); font-size: 17px;">
+    BỆNH VIỆN TIÊU CHUẨN CHẤT LƯỢNG – ĐỘI NGŨ BÁC SĨ HÀNG ĐẦU VIỆT NAM
+</div>
+
+<!-- Doctors -->
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">ĐỘI NGŨ CHUYÊN GIA</h2>
+        <p class="text-muted">Tận tâm – Chuyên môn cao – Kinh nghiệm hàng đầu</p>
+    </div>
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-4 col-md-6 col-sm-10 p-3">
+            <div class="card h-100 shadow-sm border-0 rounded-4">
+                <div class="card-body text-center p-4">
+
+                    <img src="https://res.cloudinary.com/dt1pa28g2/image/upload/v1766659463/dhtavt_r2rxdm_c_fill_w_128_h_128_ghgyoi.jpg" class="rounded-circle mb-3 shadow-sm" width="120" height="120" alt="Bác sĩ Dương Hữu Thành">
+
+                    <h5 class="fw-bold mb-1">PGS.TS Bác sĩ Dương Hữu Thành</h5>
+                    <p class="text-primary fw-semibold">Giám đốc chuyên môn</p>
+
+                    <p class="text-muted small">
+                        Giáo sư, Tiến sĩ đầu ngành Răng – Hàm – Mặt,
+                        nhiều năm kinh nghiệm giảng dạy và điều trị,
+                        chuyên sâu phục hình thẩm mỹ & Implant.
+                    </p>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-sm-10 p-3">
+            <div class="card h-100 shadow-sm border-0 rounded-4">
+                <div class="card-body text-center p-4">
+
+                    <img src="https://res.cloudinary.com/dprwsgoeg/image/upload/v1762783847/samples/smile.jpg" class="rounded-circle mb-3 shadow-sm" width="120" height="120" alt="Bác sĩ Nguyễn Thanh Thuận">
+
+                    <h5 class="fw-bold mb-1">TS. Bác sĩ Nguyễn Thanh Thuận</h5>
+                    <p class="text-primary fw-semibold">Nha Khoa Thai Phụ</p>
+
+                    <p class="text-muted small">
+                        Tiến sĩ chuyên khoa Răng – Hàm – Mặt, nhiều năm kinh nghiệm trong chăm sóc và điều trị răng
+                        miệng cho thai phụ. Am hiểu sâu sinh lý thai kỳ, áp dụng các phương pháp điều trị an toàn, nhẹ
+                        nhàng, giúp mẹ bầu yên tâm trong suốt quá trình thăm khám.
+                    </p>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="{% static 'base/js/index.js' %}"></script>
+{% endblock %}

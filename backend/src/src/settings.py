@@ -50,11 +50,14 @@ INSTALLED_APPS = [
     'users',
     'doctors',
     'appointments',
-    'notifications', 
+    'notifications',
+    'corsheaders',
 
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -63,6 +66,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('oauth2_provider.contrib.rest_framework.OAuth2Authentication',),
@@ -85,7 +90,7 @@ ROOT_URLCONF = 'src.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -108,8 +113,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'medicaldb',
         'USER': 'root',
-        'PASSWORD': 'Nhinho3008',
-        'HOST': '127.0.0.1',  # mặc định localhost
+        'PASSWORD': 'root',
+        'HOST': '',  # mặc định localhost
         'PORT': '3306',
     }
 }
@@ -154,8 +159,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -163,5 +172,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CLIENT_ID = ''
-CLIENT_SECRET = ''
+CLIENT_ID = 'LV6sCYhLWSH0ayMdfgO0c3CMLZn7zFUSDMJmOsOc'
+CLIENT_SECRET = 'vpCYtTFRsFy47xmlNQ6Gpv1NAo9RgUmTYRfAr2UsaqwvsYCtD5Y5C9yRnYFOfVqZsbxDQKDooNHPXPoYr93YmVKHl1hM0M4wJNNaE0LmVXPt0FW1Yg8GiqUkPpLoGLmq'

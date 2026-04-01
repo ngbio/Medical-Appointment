@@ -1,0 +1,45 @@
+{% extends 'base/templates/layout.html' %}
+{% load static %}
+
+{% block title %}Đăng nhập{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-lg-4 col-md-6 col-sm-10">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-5">
+
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold text-primary">Đăng nhập người dùng</h3>
+                    </div>
+
+                    <div id="alertMessage"></div>
+                    <form id="loginForm">
+                        {% csrf_token %}
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Tên đăng nhập" required>
+                            <label for="username">Tên đăng nhập</label>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <input type="password" class="form-control" id="pwd" name="password" placeholder="Mật khẩu" required>
+                            <label for="pwd">Mật khẩu</label>
+                        </div>
+
+                        <div class="d-grid gap-3">
+                            <button type="button" id="loginBtn" class="btn btn-primary btn-lg shadow">Đăng nhập 1</button>
+                            <a href="/register" class="btn btn-outline-secondary">Chưa có tài khoản? Đăng ký</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="{% static 'auth/js/login.js' %}"></script>
+<script src="{% static 'auth/js/login-form.js' %}"></script>
+{% endblock %}

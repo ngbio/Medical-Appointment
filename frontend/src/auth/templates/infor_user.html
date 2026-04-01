@@ -1,0 +1,53 @@
+{% extends 'base/templates/layout.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center text-info fw-bold mb-4">Thông tin tài khoản</h2>
+
+    <div id="userInfoContainer">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 col-sm-12">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body p-4">
+                        <button type="button" class="btn btn-sm btn-primary position-absolute top-0 end-0 m-2 "><a
+                                href="/user/infor" style="color: white; text-decoration: none;">Sửa</a></button>
+
+                        <div class="text-center mb-4">
+                            <img id="userAvatar" width="128px" height="128px" src="" class="rounded-circle shadow"
+                                 alt="Avatar">
+                        </div>
+
+                        <h4 id="userFullname" class="text-center fw-bold mb-3"></h4>
+
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Tên đăng nhập:</strong> <span id="userUsername"></span></li>
+                            <li class="list-group-item"><strong>Email:</strong> <span id="userEmail"></span></li>
+                            <li class="list-group-item"><strong>Số điện thoại:</strong> <span id="userPhone"></span></li>
+                            <li class="list-group-item"><strong>Giới tính:</strong> <span id="userGender"></span></li>
+                        </ul>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="patientsContainer" class="mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 id="patientsTitle" class="text-info fw-bold mb-0">Hồ sơ bệnh nhân</h2>
+        </div>
+
+        <div id="patientsList" class="row">
+            <!-- Danh sách bệnh nhân sẽ được render ở đây -->
+        </div>
+
+        <div id="patientsEmpty" class="alert alert-danger text-center mt-4" style="display:none;">
+            Không có hồ sơ nào!
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'auth/js/infor-user.js' %}"></script>
+{% endblock %}

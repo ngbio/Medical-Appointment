@@ -1,0 +1,68 @@
+{% extends 'base/templates/layout.html' %}
+{% load static %}
+
+{% block title %}Đăng ký{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7 col-sm-10">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4"><h3 class="fw-bold text-primary">Đăng ký người dùng</h3></div>
+                    
+                    <div id="alertMessage"></div>
+
+                    <form id="registerForm">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Tên đăng nhập" required>
+                            <label for="username">Tên đăng nhập</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Họ tên" required>
+                            <label for="fullname">Họ tên</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                            <label for="email">Email</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Số điện thoại" required pattern="[0-9]{10}">
+                            <label for="phone_number">Số điện thoại (10 số)</label>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="gender" class="form-label">Giới tính</label>
+                            <select class="form-select" id="gender" name="gender" required>
+                                <option value="">-- Chọn giới tính --</option>
+                                <option value="male">Nam</option>
+                                <option value="female">Nữ</option>
+                            </select>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Mật khẩu" required>
+                            <label for="password">Mật khẩu</label>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Xác nhận mật khẩu" required>
+                            <label for="confirm_password">Xác nhận mật khẩu</label>
+                        </div>
+
+                        <div class="d-grid gap-3">
+                            <button type="button" id="registerBtn" class="btn btn-primary btn-lg shadow">Đăng ký</button>
+                            <a href="/login" class="btn btn-outline-secondary">Quay lại đăng nhập</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'auth/js/register.js' %}"></script>
+{% endblock %}

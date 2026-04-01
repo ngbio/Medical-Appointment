@@ -45,6 +45,16 @@ class UserView(viewsets.GenericViewSet,
 def login_page(request):
     return render(request, "login.html")
 
+def register_page(request):
+    return render(request, "register.html")
+
+def booking_page(request):
+    return render(request, "booking.html")
+
+def infor_users(request):
+    return render(request, "infor_user.html")
+
+
 def logout_view(request):
     """Handle logout and redirect to login page"""
     logout(request)
