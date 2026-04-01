@@ -1,7 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework.exceptions import ValidationError
 from ..models import DoctorSchedule, TimeSlot
-from ..services.timeslot import generate_timeslots
+from ..services.timeslot_service import generate_timeslots
 
 class ScheduleSerializer(ModelSerializer):
     class Meta:
