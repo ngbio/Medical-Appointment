@@ -18,6 +18,7 @@ USE_CLOUDINARY = True
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+PROJECT_ROOT = BASE_DIR.parent.parent / 'frontend' / 'src'
 
 
 # Quick-start development settings - unsuitable for production
@@ -90,7 +91,10 @@ ROOT_URLCONF = 'src.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [
+            PROJECT_ROOT,
+            PROJECT_ROOT /'templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -113,7 +117,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'medicaldb',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': 'Nhinho3008',
         'HOST': '',  # mặc định localhost
         'PORT': '3306',
     }
@@ -161,7 +165,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    PROJECT_ROOT / "static",
 ]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
