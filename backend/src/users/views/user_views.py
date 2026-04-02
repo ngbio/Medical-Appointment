@@ -43,16 +43,16 @@ class UserView(viewsets.GenericViewSet,
 
 
 def login_page(request):
-    return render(request, "login.html")
+    return render(request, "auth/login.html")
 
 def register_page(request):
-    return render(request, "register.html")
+    return render(request, "auth/register.html")
 
 def booking_page(request):
-    return render(request, "booking.html")
+    return render(request, "appointment/booking.html")
 
 def infor_users(request):
-    return render(request, "infor_user.html")
+    return render(request, "auth/nfor_user.html")
 
 
 def logout_view(request):
