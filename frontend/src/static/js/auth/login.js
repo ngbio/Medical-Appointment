@@ -1,9 +1,18 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    const loginBtn = document.getElementById("loginBtn");
+    const loginBtn = document.getElementById('loginBtn');
+    const loginForm = document.getElementById('loginForm');
 
-    loginBtn.addEventListener("click", login);
+    loginBtn.addEventListener('click', async () => {
+        await login();
+    });
 
+    loginForm.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            login();
+        }
+    });
 });
 
 async function login() {
@@ -30,22 +39,28 @@ async function login() {
 
     try {
         const formData = new URLSearchParams();
+        formData.append("grant_type", "password");
         formData.append("username", username);
         formData.append("password", password);
-        formData.append("client_id", "LV6sCYhLWSH0ayMdfgO0c3CMLZn7zFUSDMJmOsOc");
-        formData.append("client_secret", "vpCYtTFRsFy47xmlNQ6Gpv1NAo9RgUmTYRfAr2UsaqwvsYCtD5Y5C9yRnYFOfVqZsbxDQKDooNHPXPoYr93YmVKHl1hM0M4wJNNaE0LmVXPt0FW1Yg8GiqUkPpLoGLmq");
-        formData.append("grant_type", "password");
+
+        const basicAuth = btoa(
+            "8R8QAx9e2sS9VsXLLvZmSdNjLOZlp6mCBU0AxTII" +
+            ":" +
+            "ln00VPl380MedoLkaqg54Dde3byjZuAdca7U3F96d8jKZuusQhr91glm2UssSiZImNxlTpaiZK7CMJiMCemuxBv8IrqlFpAMAGBvlVSbzS72QqP3dLh1TYVYefNGvBc9"
+        );
+        console.log("Basic:", basicAuth);
 
         const response = await fetch("/o/token/", {
             method: "POST",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": `Basic ${basicAuth}`
+
             },
-            body: formData
+            body: formData.toString()
         });
 
         const data = await response.json();
-
         if (response.ok) {
             localStorage.setItem("access_token", data.access_token);
 

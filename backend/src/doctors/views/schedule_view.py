@@ -1,6 +1,6 @@
-from rest_framework import viewsets, parsers, permissions, mixins, status
+from doctors.perms import IsDoctor
+from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from datetime import datetime
 from ..serializers.schedule_serializer import ScheduleSerializer
@@ -9,38 +9,24 @@ from users.models import RoleEnum
 from ..services.schedule_service import get_doctor_schedules, get_schedules_by_doctor, get_available_slots
 from doctors.serializers.timeslot_serializer import TimeSlotSerializer
 
-class ScheduleViewSet(viewsets.GenericViewSet,
-                      mixins.ListModelMixin,
-                      mixins.CreateModelMixin,
-                      mixins.UpdateModelMixin,
-                      mixins.DestroyModelMixin):
+class ScheduleViewSet(viewsets.GenericViewSet):
     
     serializer_class = ScheduleSerializer
-    http_method_names = ['get', 'post', 'patch', 'delete']
-
-    def get_queryset(self):
-        user = self.request.user
-
-        if not user.is_authenticated:
-            return DoctorSchedule.objects.none()
-
-        # Doctor only can see their own schedule
-        if user.role == RoleEnum.DOCTOR:
-            return DoctorSchedule.objects.filter(doctor__user=user)
-
-        return DoctorSchedule.objects.all()
+    http_method_names = ['get']
+    queryset = DoctorSchedule.objects.all()
+    
     
     def get_permissions(self):
-        if self.action in ['create', 'partial_update', 'destroy']:
-            permission_classes = [permissions.IsAdminUser]
-        elif self.action in ['available_slots', 'by_doctor']:
+        if self.action == 'my_schedules':
+            return [permissions.IsAuthenticated(), IsDoctor()]
+
+        # public APIs
+        if self.action in ['by_doctor', 'available_slots']:
             return [permissions.AllowAny()]
-        else:
-            permission_classes = [permissions.IsAuthenticated]
 
-        return [permission() for permission in permission_classes]
+        return [permissions.AllowAny()]
 
-    @action(methods=['get'], detail=False, url_path='my-schedules', permission_classes=[permissions.IsAuthenticated])
+    @action(methods=['get'], detail=False, url_path='my-schedules')
     def my_schedules(self, request):
         schedules = get_doctor_schedules(
             user=request.user,
@@ -66,6 +52,5 @@ class ScheduleViewSet(viewsets.GenericViewSet,
             schedule_id=request.query_params.get('schedule_id')
         )
 
-        
         serializer = TimeSlotSerializer(slots, many=True)
         return Response(serializer.data)

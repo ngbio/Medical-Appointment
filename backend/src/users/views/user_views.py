@@ -52,7 +52,7 @@ def booking_page(request):
     return render(request, "appointment/booking.html")
 
 def infor_users(request):
-    return render(request, "auth/nfor_user.html")
+    return render(request, "auth/infor_user.html")
 
 
 def logout_view(request):

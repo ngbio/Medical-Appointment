@@ -14,7 +14,14 @@ class UserSerializer(serializers.ModelSerializer):
             "role": {"read_only": True, },
         }
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if instance.avatar:
+            data["avatar"] = instance.avatar.url
+        return data
+
     def create(self, validated_data):
+        avatar = validated_data.pop("avatar", None)
         password = validated_data.pop("password", None)
 
         # If create new user, auto create patient profile for them

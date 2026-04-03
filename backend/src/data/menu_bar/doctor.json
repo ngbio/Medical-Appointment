@@ -1,0 +1,18 @@
+[
+    {
+        "name": "Trang chủ",
+        "url": "/index"
+    },
+    {
+        "name": "Lịch làm việc",
+        "url": "/doctor/schedule"
+    },
+    {
+        "name": "Danh sách chờ",
+        "url": "/doctor/waiting-list"
+    },
+    {
+        "name": "Khám bệnh",
+        "url": "/doctor/examination"
+    }
+]

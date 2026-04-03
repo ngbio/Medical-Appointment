@@ -12,31 +12,20 @@ from doctors.perms import IsDoctor
 
 class DoctorProfileViewSet(viewsets.GenericViewSet,
                            mixins.ListModelMixin,
-                           mixins.CreateModelMixin,
-                           mixins.UpdateModelMixin,
-                           mixins.DestroyModelMixin,):
+                           mixins.UpdateModelMixin):
     serializer_class = DoctorProfileSerializer
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
     pagination_class = DoctorProfileCursorPagination
-    http_method_names = ['get', 'post', 'patch', 'delete']
-
-    def get_queryset(self):
-        user = self.request.user
-
-        if getattr(user, "role", None) == RoleEnum.DOCTOR:
-            return DoctorProfile.objects.filter(user=user)
-
-        return DoctorProfile.objects.all()
+    http_method_names = ['get', 'patch']
+    queryset = DoctorProfile.objects.all()
 
     def get_permissions(self):
-        if self.action in ['create', 'destroy']:
-            permission_classes = [permissions.IsAdminUser]
-        elif self.action in ['partial_update']:
+        if self.action in ['partial_update']:
             permission_classes = [IsOwner, permissions.IsAdminUser]
-        else:
-            permission_classes = [permissions.AllowAny]
+        elif self.action == 'me':
+            return [permissions.IsAuthenticated(), IsDoctor()]
 
-        return [permission() for permission in permission_classes]
+        return [permissions.AllowAny()]
 
     
     # Deactivate the user instead of deleting the doctor profile

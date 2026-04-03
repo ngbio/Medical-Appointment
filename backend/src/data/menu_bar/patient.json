@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Trang chủ",
+        "url": "/index"
+    },
+    {
+        "name": "Bác sĩ",
+        "url": "/doctors"
+    },
+    {
+        "name": "Đặt lịch khám",
+        "url": "/booking"
+    }
+]

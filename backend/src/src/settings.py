@@ -69,6 +69,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_HEADERS = ['*']
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('oauth2_provider.contrib.rest_framework.OAuth2Authentication',),
@@ -176,5 +177,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CLIENT_ID = 'y7HfLdHedeVi29EZM5rIoKvNCOqN7m0wtITciw8t'
-CLIENT_SECRET = 'FVZAgEIwfVpcbIMUx5Sz6ehm9OQeca1R7VB4lXak9qWuLHSss2gQlwIb7r30jnNb7FJzM8Ey1ICv0XvztrXyu5WqP6mp7gcOAGrZfNU3z6hPpEaBlxvCVVrZASIQvmoU'
+CLIENT_ID = '8R8QAx9e2sS9VsXLLvZmSdNjLOZlp6mCBU0AxTII'
+CLIENT_SECRET = 'ln00VPl380MedoLkaqg54Dde3byjZuAdca7U3F96d8jKZuusQhr91glm2UssSiZImNxlTpaiZK7CMJiMCemuxBv8IrqlFpAMAGBvlVSbzS72QqP3dLh1TYVYefNGvBc9'
