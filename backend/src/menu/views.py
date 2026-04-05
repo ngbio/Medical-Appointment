@@ -9,17 +9,15 @@ from django.conf import settings
 def get_menu(request):
     user = request.user
 
-    # Xác định role
     if not user.is_authenticated:
         role = "guest"
     else:
-        role = getattr(user, "role", None)  # tùy model của em
-    # Đường dẫn file JSON
-    path = os.path.join(settings.BASE_DIR, f"data\\menu_bar\\{role}.json")
+        role = user.role  # đã có field role
 
-    # fallback nếu không tồn tại
+    path = os.path.join(settings.BASE_DIR, f"data/menu_bar/{role}.json")
+
     if not os.path.exists(path):
-        path = os.path.join(settings.BASE_DIR, "data\\menu_bar\\guest.json")
+        path = os.path.join(settings.BASE_DIR, "data/menu_bar/guest.json")
 
     with open(path, encoding="utf-8") as f:
         data = json.load(f)

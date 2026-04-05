@@ -1,7 +1,9 @@
 from rest_framework import viewsets, parsers, permissions, mixins, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
+from django.shortcuts import render
+from django.utils.timezone import now
 
 from ..models import DoctorProfile
 from ..serializers.doctor_serializer import DoctorProfileSerializer
@@ -9,6 +11,7 @@ from ..paginators import DoctorProfileCursorPagination
 from src.perms import IsOwner
 from users.models import RoleEnum
 from doctors.perms import IsDoctor
+from appointments.models import Appointment
 
 class DoctorProfileViewSet(viewsets.GenericViewSet,
                            mixins.ListModelMixin,
@@ -59,4 +62,47 @@ class DoctorProfileViewSet(viewsets.GenericViewSet,
             serializer.save()
 
             return Response(serializer.data, status=status.HTTP_200_OK)
-    
+        
+    @action(methods=['get'], detail=False, url_path='dashboard', permission_classes=[permissions.IsAuthenticated, IsDoctor])
+    def dashboard(self, request):
+        user = request.user
+
+        try:
+            doctor_profile = DoctorProfile.objects.get(user_id=user.id)
+        except DoctorProfile.DoesNotExist:
+            raise ValidationError("Doctor profile does not exist.")
+        
+        today = now().date()
+
+        # Today's appointments
+        today_count = Appointment.objects.filter(
+            doctor=doctor_profile,
+            time_slot__schedule__work_date=today
+        ).count()
+
+        # Upcoming appointments
+        upcoming = Appointment.objects.filter(
+            doctor=doctor_profile,
+            time_slot__schedule__work_date__gte=today
+        ).select_related(
+            "patient__user",
+            "time_slot__schedule"
+        ).order_by("time_slot__start_time")[:5]
+
+        return Response({
+            "today_count": today_count,
+            "upcoming_count": upcoming.count(),
+            "appointments": [
+                {
+                    "patient": a.patient.user.fullname,
+                    "time": str(a.time_slot.start_time),
+                    "status": a.status
+                }
+                for a in upcoming
+            ]
+        })
+
+
+
+def doctor_dashboard(request):
+    return render(request, "doctor/dashboard_doctor.html")

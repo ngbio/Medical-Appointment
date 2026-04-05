@@ -1,7 +1,7 @@
 [
     {
         "name": "Trang chủ",
-        "url": "/index"
+        "url": "/doctor/dashboard"
     },
     {
         "name": "Lịch làm việc",

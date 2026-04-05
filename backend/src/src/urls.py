@@ -19,6 +19,7 @@ from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 # from users.admin import admin_site
+from doctors.views.doctor_view import doctor_dashboard
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -40,6 +41,7 @@ urlpatterns = [
     path('', include('doctors.urls')),
     path('api/', include('menu.urls')),
     path('admin/', admin.site.urls),
+    path("doctor/dashboard/", doctor_dashboard, name="doctor-dashboard"),
     re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$',
             schema_view.without_ui(cache_timeout=0),

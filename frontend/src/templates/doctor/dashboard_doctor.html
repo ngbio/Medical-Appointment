@@ -1,0 +1,52 @@
+
+{% extends "doctor/layout/layout.html" %}
+{% load static %}
+
+
+{% block title %}Dashboard{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="row mb-4">
+
+    <div class="col-md-4">
+        <div class="card shadow-sm p-3">
+            <h6>Today's Appointments</h6>
+            <h3 id="todayCount">0</h3>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm p-3">
+            <h6>Upcoming Appointments</h6>
+            <h3 id="upcomingCount">0</h3>
+        </div>
+    </div>
+
+</div>
+
+<!-- Appointment Table -->
+<div class="card shadow-sm p-3">
+    <h5>Upcoming Appointments</h5>
+
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Patient</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="appointmentTable">
+            <!-- JS render -->
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/doctor/dashboard.js' %}"></script>
+{% endblock %}

@@ -1,10 +1,10 @@
 async function loadMenu(token) {
     try {
-        const res = await fetch("/api/menu/", {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        });
+        const headers = token
+            ? { "Authorization": "Bearer " + token }
+            : {};
+
+        const res = await fetch("/api/menu/", { headers }); // Get menu for current user
 
         const menus = await res.json();
 
@@ -32,42 +32,52 @@ async function loadMenu(token) {
 document.addEventListener("DOMContentLoaded", async function () {
 
     const token = localStorage.getItem("access_token");
+    const userStr = localStorage.getItem("user");
 
     const guestMenu = document.getElementById("guestMenu");
     const userMenu = document.getElementById("userMenu");
 
-    // Nếu chưa login
+    // Not login
     if (!token) {
         guestMenu.style.display = "block";
         userMenu.style.display = "none";
 
-        // Load menu guest
         await loadMenu(null);
         return;
     }
 
-    // Nếu đã login
+    // Login
     guestMenu.style.display = "none";
     userMenu.style.display = "block";
 
-    try {
-        const res = await fetch("/users/current-user/", {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        });
+    let user = null;
 
-        const user = await res.json();
+    // 🔥 Ưu tiên lấy từ cache
+    if (userStr) {
+        user = JSON.parse(userStr);
+    } else {
+        // fallback nếu chưa có cache
+        try {
+            const res = await fetch("/users/current-user/", {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+            user = await res.json();
 
-        document.getElementById("username").innerText = user.username;
+            // cache lại
+            localStorage.setItem("user", JSON.stringify(user));
 
-        // Load menu theo role từ backend
-        await loadMenu(token);
-
-    } catch (err) {
-        console.log(err);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
+    if (user) {
+        document.getElementById("username").innerText = user.username;
+    }
+
+    await loadMenu(token);
 });
 
 function handleLogout() {

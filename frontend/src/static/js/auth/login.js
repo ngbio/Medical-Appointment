@@ -17,8 +17,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 async function login() {
 
-    console.log("Button clicked");
-
     const form = document.getElementById("loginForm");
     const formDataObj = new FormData(form);
 
@@ -26,7 +24,6 @@ async function login() {
     const password = formDataObj.get("password");
 
     const alertBox = document.getElementById("alertMessage");
-
     alertBox.innerHTML = "";
 
     if (!username || !password) {
@@ -48,30 +45,58 @@ async function login() {
             ":" +
             "ln00VPl380MedoLkaqg54Dde3byjZuAdca7U3F96d8jKZuusQhr91glm2UssSiZImNxlTpaiZK7CMJiMCemuxBv8IrqlFpAMAGBvlVSbzS72QqP3dLh1TYVYefNGvBc9"
         );
-        console.log("Basic:", basicAuth);
 
         const response = await fetch("/o/token/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Authorization": `Basic ${basicAuth}`
-
             },
             body: formData.toString()
         });
 
         const data = await response.json();
+
         if (response.ok) {
+
+            // save token
             localStorage.setItem("access_token", data.access_token);
+
+            // get current user info
+            const userRes = await fetch("/users/current-user/", {
+                headers: {
+                    "Authorization": `Bearer ${data.access_token}`
+                }
+            });
+
+            const user = await userRes.json();
 
             alertBox.innerHTML = `
             <div class="alert alert-success">
                 Đăng nhập thành công!
             </div>`;
 
+            // redirect based on role after short delay
             setTimeout(() => {
-                window.location.href = "/index/";
-            }, 800);
+
+                switch (user.role) {
+                    case "doctor":
+                        window.location.href = "/doctor/dashboard/";
+                        break;
+
+                    case "admin":
+                        window.location.href = "/admin/";
+                        break;
+
+                    case "receptionist":
+                        window.location.href = "/receptionist/dashboard/";
+                        break;
+
+                    default:
+                        window.location.href = "/index/";
+                }
+
+            }, 500);
 
         } else {
             alertBox.innerHTML = `
