@@ -23,16 +23,31 @@ class DoctorProfileViewSet(viewsets.GenericViewSet,
     def get_queryset(self):
         user = self.request.user
 
-        if getattr(user, "role", None) == RoleEnum.DOCTOR:
-            return DoctorProfile.objects.filter(user=user)
+        queryset = DoctorProfile.objects.select_related('user', 'specialty').all()
 
-        return DoctorProfile.objects.all()
+        if getattr(user, "role", None) == RoleEnum.DOCTOR:
+            queryset = queryset.filter(user=user)
+
+      
+        if self.action == 'list':
+            query_params = self.request.query_params
+            
+            specialty_id = query_params.get('speciality_id')
+            filter_date = query_params.get('date')
+
+            if specialty_id:
+                queryset = queryset.filter(specialty_id=specialty_id)
+
+            if filter_date:
+                queryset = queryset.filter(schedules__work_date=filter_date).distinct()
+
+        return queryset
 
     def get_permissions(self):
         if self.action in ['create', 'destroy']:
             permission_classes = [permissions.IsAdminUser]
         elif self.action in ['partial_update']:
-            permission_classes = [IsOwner, permissions.IsAdminUser]
+            permission_classes = [IsOwner | permissions.IsAdminUser]
         else:
             permission_classes = [permissions.AllowAny]
 
