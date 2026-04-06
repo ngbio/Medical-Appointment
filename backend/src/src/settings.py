@@ -117,9 +117,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'medicaldb',
         'USER': 'root',
-        'PASSWORD': 'Nhinho3008',
+        'PASSWORD': 'Trang@oK2005',
         'HOST': '',  # mặc định localhost
-        'PORT': '3306',
+        'PORT': '',
     }
 }
 

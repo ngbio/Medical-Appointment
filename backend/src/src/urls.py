@@ -28,8 +28,7 @@ schema_view = get_schema_view(
         title="Medical Appointment API",
         default_version='v1',
         description="APIs for Medical Appointment",
-        contact=openapi.Contact(email="2354050141trang@ou.edu.vn"),
-        license=openapi.License(name="team2@2026"),
+        contact=openapi.Contact(email="trangok005@gmail.com"),
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
@@ -37,8 +36,9 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('', include('users.urls')),
+    path('', include('appointments.urls')),
     path('', include('doctors.urls')),
-    path('api/', include('menu.urls')),
+    #path('api/', include('menu.urls')),
     path('admin/', admin.site.urls),
     re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$',
