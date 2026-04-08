@@ -10,7 +10,7 @@ class AppointmentStatus(models.TextChoices):
 class Appointment(models.Model):
     patient = models.ForeignKey(PatientProfile, on_delete=models.CASCADE, related_name='appointments')
     doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE, related_name='appointments')
-    time_slot = models.OneToOneField(TimeSlot, on_delete=models.CASCADE, related_name='appointments')
+    time_slot = models.ForeignKey(TimeSlot, on_delete=models.CASCADE, related_name='appointments')
     status = models.CharField(max_length=10, choices=AppointmentStatus.choices, default=AppointmentStatus.BOOKED)
     symptoms = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

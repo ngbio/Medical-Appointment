@@ -28,6 +28,7 @@ class DoctorProfileViewSet(viewsets.GenericViewSet,
         elif self.action == 'me':
             return [permissions.IsAuthenticated(), IsDoctor()]
 
+
         return [permissions.AllowAny()]
 
     
