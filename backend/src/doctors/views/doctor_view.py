@@ -20,27 +20,43 @@ class DoctorProfileViewSet(viewsets.GenericViewSet,
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
     pagination_class = DoctorProfileCursorPagination
     http_method_names = ['get', 'patch']
-    queryset = DoctorProfile.objects.all()
+
+    def get_queryset(self):
+        user = self.request.user
+
+        queryset = DoctorProfile.objects.select_related(
+            'user', 'specialty').prefetch_related(
+            'schedules'
+        )
+
+        if getattr(user, "role", None) == RoleEnum.DOCTOR:
+            queryset = queryset.filter(user=user)
+        
+        if self.action == 'list':
+            query_params = self.request.query_params
+
+            specialty_id = query_params.get('speciality_id')
+            filter_date = query_params.get('date')
+
+            if specialty_id:
+                queryset = queryset.filter(specialty_id=specialty_id)
+
+            if filter_date:
+                queryset = queryset.filter(schedules__work_date=filter_date).distinct()
+
+        return queryset
+    
 
     def get_permissions(self):
         if self.action in ['partial_update']:
-            permission_classes = [IsOwner, permissions.IsAdminUser]
-        elif self.action == 'me':
+            return [(IsOwner | permissions.IsAdminUser)()]
+        elif self.action in ['me', 'dashboard']:
             return [permissions.IsAuthenticated(), IsDoctor()]
-
 
         return [permissions.AllowAny()]
 
-    
-    # Deactivate the user instead of deleting the doctor profile
-    def perform_destroy(self, instance):
-        doctor_user = instance.user
-        doctor_user.is_active = False  
-        doctor_user.save()
 
-        instance.delete()
-
-    @action(methods=['get', 'patch'], detail=False, url_path='me', permission_classes=[permissions.IsAuthenticated, IsDoctor])
+    @action(methods=['get', 'patch'], detail=False, url_path='me', permission_classes=[permissions.IsAuthenticated(), IsDoctor()])
     def me(self, request):
         user = request.user
 
@@ -64,7 +80,7 @@ class DoctorProfileViewSet(viewsets.GenericViewSet,
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         
-    @action(methods=['get'], detail=False, url_path='dashboard', permission_classes=[permissions.IsAuthenticated, IsDoctor])
+    @action(methods=['get'], detail=False, url_path='dashboard', permission_classes=[permissions.IsAuthenticated(), IsDoctor()])
     def dashboard(self, request):
         user = request.user
 
@@ -88,18 +104,20 @@ class DoctorProfileViewSet(viewsets.GenericViewSet,
         ).select_related(
             "patient__user",
             "time_slot__schedule"
-        ).order_by("time_slot__start_time")[:5]
+        ).order_by("time_slot__schedule__work_date", "time_slot__start_time")
 
         return Response({
             "today_count": today_count,
             "upcoming_count": upcoming.count(),
             "appointments": [
-                {
+                {   
+                    "id": a.id,
                     "patient": a.patient.user.fullname,
+                    # "date": str(a.time_slot.schedule.work_date),
                     "time": str(a.time_slot.start_time),
                     "status": a.status
                 }
-                for a in upcoming
+                for a in upcoming[:5]
             ]
         })
 

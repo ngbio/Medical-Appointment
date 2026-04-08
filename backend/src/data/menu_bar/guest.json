@@ -6,9 +6,5 @@
     {
         "name": "Bác sĩ",
         "url": "/doctors"
-    },
-    {
-        "name": "Đăng nhập",
-        "url": "/login"
     }
 ]
