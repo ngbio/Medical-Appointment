@@ -3,9 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     loadCurrentUser();
 });
 
-// ======================
 // Load Dashboard Data
-// ======================
 async function loadDashboard() {
     const token = localStorage.getItem("access_token");
 
@@ -22,6 +20,7 @@ async function loadDashboard() {
         });
 
         if (res.status === 401) {
+            localStorage.removeItem("access_token");
             window.location.href = "/login/";
             return;
         }
@@ -40,6 +39,8 @@ async function loadDashboard() {
 
         // Table
         const table = document.getElementById("appointmentTable");
+        document.getElementById("currentDate").innerText = new Date().toLocaleDateString();
+
         table.innerHTML = "";
 
         data.appointments.forEach(a => {
@@ -48,6 +49,12 @@ async function loadDashboard() {
                     <td>${a.time}</td>
                     <td>${a.patient}</td>
                     <td>${a.status}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm"
+                            onclick="goToExamination(${a.id})">
+                            Khám bệnh
+                        </button>
+                    </td>
                 </tr>
             `;
         });
@@ -57,29 +64,20 @@ async function loadDashboard() {
     }
 }
 
-// ======================
 // Load User Info
-// ======================
 async function loadCurrentUser() {
     const token = localStorage.getItem("access_token");
 
     if (!token) return;
 
-    try {
-        const res = await fetch("/users/current-user/", {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
-
-        const user = await res.json();
-
-        document.getElementById("doctorName").innerText =
+    const user = JSON.parse(token);
+    document.getElementById("doctorName").innerText =
             `Welcome, Dr. ${user.username}`;
+}
 
-    } catch (err) {
-        console.error(err);
-    }
+
+function goToExamination(appointmentId) {
+    window.location.href = `/doctor/examination/?appointment_id=${appointmentId}`;
 }
 
 function logout() {
