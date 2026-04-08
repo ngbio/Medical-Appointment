@@ -52,11 +52,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     let user = null;
 
-    // 🔥 Ưu tiên lấy từ cache
     if (userStr) {
         user = JSON.parse(userStr);
     } else {
-        // fallback nếu chưa có cache
         try {
             const res = await fetch("/users/current-user/", {
                 headers: {
