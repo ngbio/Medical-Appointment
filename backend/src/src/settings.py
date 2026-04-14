@@ -10,15 +10,16 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = BASE_DIR.parent.parent  # Go to Medical-Appointment root
 USE_CLOUDINARY = True
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-PROJECT_ROOT = BASE_DIR.parent.parent / 'frontend' / 'src'
 
 
 # Quick-start development settings - unsuitable for production
@@ -69,7 +70,6 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_HEADERS = ['*']
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('oauth2_provider.contrib.rest_framework.OAuth2Authentication',),
@@ -80,9 +80,9 @@ REST_FRAMEWORK = {
 import cloudinary.api
 
 cloudinary.config(
-    cloud_name='dxfbpkmen',
-    api_key='771652583444831',
-    api_secret='EwZYOpA4n19unyDcRFEDBud6LBA'
+    cloud_name='dprwsgoeg',
+    api_key='561165731845827',
+    api_secret='dUWu7WiILETcjr_Sn8sicQhhiW0'
 )
 
 CKEDITOR_UPLOAD_PATH = "images/ckeditors/"
@@ -93,8 +93,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            PROJECT_ROOT,
-            PROJECT_ROOT /'templates',
+            PROJECT_ROOT / 'frontend' / 'src',
+            PROJECT_ROOT / 'frontend' / 'src' / 'templates',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -116,11 +116,11 @@ WSGI_APPLICATION = 'src.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'medicaldb',
-        'USER': 'root',
-        'PASSWORD': 'Nhinho3008',
-        'HOST': '',  # mặc định localhost
-        'PORT': '3306',
+        'NAME': os.environ.get('DB_NAME', 'medicaldb'),
+        'USER': os.environ.get('DB_USER', 'root'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'root'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '3306'),
     }
 }
 
@@ -166,7 +166,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    PROJECT_ROOT / "static",
+    PROJECT_ROOT / 'frontend' / 'src' / 'static',  # Static files directory
 ]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -177,5 +177,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CLIENT_ID = '8R8QAx9e2sS9VsXLLvZmSdNjLOZlp6mCBU0AxTII'
-CLIENT_SECRET = 'ln00VPl380MedoLkaqg54Dde3byjZuAdca7U3F96d8jKZuusQhr91glm2UssSiZImNxlTpaiZK7CMJiMCemuxBv8IrqlFpAMAGBvlVSbzS72QqP3dLh1TYVYefNGvBc9'
+CLIENT_ID = 'LV6sCYhLWSH0ayMdfgO0c3CMLZn7zFUSDMJmOsOc'
+CLIENT_SECRET = 'vpCYtTFRsFy47xmlNQ6Gpv1NAo9RgUmTYRfAr2UsaqwvsYCtD5Y5C9yRnYFOfVqZsbxDQKDooNHPXPoYr93YmVKHl1hM0M4wJNNaE0LmVXPt0FW1Yg8GiqUkPpLoGLmq'

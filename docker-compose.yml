@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: medical_appointment_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/src:/app/backend/src
+      - ./frontend:/app/frontend
+      - static_volume:/app/backend/src/staticfiles
+    environment:
+      - DEBUG=True
+      - DB_HOST=host.docker.internal
+      - DB_PORT=3306
+      - DB_NAME=medicaldb
+      - DB_USER=root
+      - DB_PASSWORD=root
+    networks:
+      - medical_network
+
+volumes:
+  static_volume:
+
+networks:
+  medical_network:
+    driver: bridge
+
