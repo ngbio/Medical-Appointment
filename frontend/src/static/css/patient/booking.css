@@ -1,0 +1,50 @@
+.time-slot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 14px;
+}
+
+.slot-btn {
+    width: 100%;
+    padding: 12px 0;
+    border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    background: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+    transition: all 0.25s ease;
+    position: relative;
+}
+
+/* Hover */
+.slot-btn:hover:not(:disabled) {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    transform: translateY(-2px);
+}
+
+/* Active */
+.slot-btn.active {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: white;
+    border: none;
+    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.35);
+}
+
+/* Disabled */
+.slot-btn:disabled {
+    background: #f8fafc;
+    color: #cbd5e1;
+    border: 1px dashed #e2e8f0;
+    text-decoration: line-through;
+    cursor: not-allowed;
+}
+
+/* Badge nhỏ */
+.slot-btn small {
+    display: block;
+    font-size: 11px;
+    margin-top: 4px;
+    opacity: 0.7;
+}

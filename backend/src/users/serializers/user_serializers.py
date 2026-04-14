@@ -13,6 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
             "password": {"write_only": True, },
             "role": {"read_only": True, },
         }
+        
 
     def to_representation(self, instance):
         data = super().to_representation(instance)

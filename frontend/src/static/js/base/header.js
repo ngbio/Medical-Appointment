@@ -89,3 +89,4 @@ function handleLogout() {
             window.location.href = "/index/";
         });
 }
+

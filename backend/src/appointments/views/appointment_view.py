@@ -12,6 +12,7 @@ from rest_framework import permissions
 from src.perms import IsPatient
 from src.perms import IsAdmin
 from doctors.perms import IsDoctor
+from django.shortcuts import render
 
 class AppointmentViewSet(viewsets.GenericViewSet,
                          mixins.ListModelMixin,
@@ -91,3 +92,4 @@ class AppointmentViewSet(viewsets.GenericViewSet,
             {"detail": "Appointment canceled successfully.", "status": appointment.status},
             status=status.HTTP_200_OK
         )
+

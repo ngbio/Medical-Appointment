@@ -26,16 +26,14 @@ def get_doctor_schedules(user, date_str=None):
     )
 
 # patient gets doctor schedule by date
-def get_schedules_by_doctor(doctor_id, date_str):
-    if not doctor_id or not date_str:
-        raise ValidationError("doctor_id and date are required.")
+def get_schedules_by_doctor(doctor_id, date_str=None):
+    # Bắt đầu với query lấy theo bác sĩ
+    queryset = DoctorSchedule.objects.filter(doctor_id=doctor_id)
 
-    work_date = parse_date(date_str)
-
-    return DoctorSchedule.objects.filter(
-        doctor_id=doctor_id,
-        work_date=work_date
-    )
+    if date_str:
+        queryset = queryset.filter(work_date=date_str)
+    
+    return queryset.order_by('work_date')
 
 
 # available timeslots

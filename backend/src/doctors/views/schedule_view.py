@@ -38,9 +38,15 @@ class ScheduleViewSet(viewsets.GenericViewSet):
 
     @action(methods=['get'], detail=False, url_path='by-doctor')
     def by_doctor(self, request):
+        doctor_id = request.query_params.get('doctor_id')
+        date_str = request.query_params.get('date')
+
+        if not doctor_id:
+            return Response({"detail": "doctor_id is required."}, status=400)
+
         schedules = get_schedules_by_doctor(
-            doctor_id=request.query_params.get('doctor_id'),
-            date_str=request.query_params.get('date')
+            doctor_id=doctor_id,
+            date_str=date_str 
         )
 
         serializer = self.get_serializer(schedules, many=True)
