@@ -30,8 +30,10 @@ def get_schedules_by_doctor(doctor_id, date_str=None):
     # Bắt đầu với query lấy theo bác sĩ
     queryset = DoctorSchedule.objects.filter(doctor_id=doctor_id)
 
+    work_date = parse_date(date_str)
+
     if date_str:
-        queryset = queryset.filter(work_date=date_str)
+        queryset = queryset.filter(work_date=work_date)
     
     return queryset.order_by('work_date')
 

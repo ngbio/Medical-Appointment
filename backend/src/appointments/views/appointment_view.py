@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
+from django.utils import timezone
 from appointments.models import Appointment, AppointmentStatus
 from appointments.serializers.appointment_serializers import AppointmentSerializer
 from users.models import RoleEnum
@@ -12,6 +13,8 @@ from rest_framework import permissions
 from src.perms import IsPatient
 from src.perms import IsAdmin
 from doctors.perms import IsDoctor
+from receptionists.perms import IsReceptionist
+from receptionists.serializers.receptionist_serializer import ReceptionistBookSerializer
 from django.shortcuts import render
 
 class AppointmentViewSet(viewsets.GenericViewSet,
@@ -25,8 +28,12 @@ class AppointmentViewSet(viewsets.GenericViewSet,
         if self.action == 'create':
             return [IsPatient()]
 
-        if self.action in ['list', 'retrieve', 'cancel_appointment']:
-            return [(IsPatient | IsAdmin | IsDoctor)()]
+        elif self.action in ['list', 'retrieve', 'cancel_appointment']:
+            return [(IsPatient | permissions.IsAdminUser | IsDoctor)()]
+        elif self.action == 'complete_appointment':
+            return [IsDoctor()]
+        elif self.action in ['book_for_patient', 'dashboard']:
+            return [IsReceptionist()]
 
         return [permissions.IsAuthenticated()]
 
@@ -93,3 +100,68 @@ class AppointmentViewSet(viewsets.GenericViewSet,
             status=status.HTTP_200_OK
         )
 
+    @action(methods=['patch'], detail=True, url_path='complete', permission_classes=[permissions.IsAuthenticated(), IsDoctor()])
+    def complete_appointment(self, request, pk=None):
+        appointment = self.get_object()
+        user = request.user
+        if appointment.doctor.user != user:
+            raise PermissionDenied("You do not have permission to complete this appointment.")
+
+        if appointment.status == AppointmentStatus.CANCELED:
+            raise ValidationError({"status": "Cannot complete a canceled appointment."})
+
+        if appointment.status == AppointmentStatus.COMPLETED:
+            raise ValidationError({"status": "This appointment is already completed."})
+
+        if appointment.time_slot.schedule.work_date > timezone.now().date():
+            raise ValidationError({"status": "Cannot complete an appointment that is scheduled for a future date."})
+
+        with transaction.atomic():
+            appointment.status = AppointmentStatus.COMPLETED
+            appointment.save(update_fields=['status'])
+
+        return Response(
+            {"detail": "Appointment marked as completed successfully.", 
+             "status": appointment.status},
+            status=status.HTTP_200_OK
+        )
+    
+    @action(methods=['post'], detail=False, url_path='book-for-patient')
+    def book_for_patient(self, request):
+        serializer = ReceptionistBookSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # create appointment
+        appointment = serializer.save()
+
+        return Response({
+            "message": "Booked successfully",
+            "data": AppointmentSerializer(appointment).data
+        }, status=201)
+    
+    @action(methods=['get'], detail=False, url_path='dashboard', permission_classes=[IsReceptionist])
+    def dashboard(self, request):
+        today = timezone.localdate()
+        # today = "2026-04-18"
+        # print(today)
+
+        queryset = Appointment.objects.select_related(
+            'doctor__user', 'patient__user', 'time_slot__schedule'
+        ).filter(
+            time_slot__schedule__work_date=today
+        ).order_by('time_slot__start_time')
+
+        total = queryset.count()
+        completed = queryset.filter(status=AppointmentStatus.COMPLETED).count()
+        waiting = queryset.filter(status=AppointmentStatus.BOOKED).count()
+        canceled = queryset.filter(status=AppointmentStatus.CANCELED).count()
+
+        serializer = AppointmentSerializer(queryset, many=True)
+
+        return Response({
+            "total": total,
+            "completed": completed,
+            "waiting": waiting,
+            "canceled": canceled,
+            "results": serializer.data
+        })
