@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Trang chủ",
+        "url": "/receptionist/dashboard"
+    },
+    {
+        "name": "Đặt lịch cho bệnh nhân",
+        "url": "/receptionist/book-for-patient"
+    },
+    {
+        "name": "Hồ sơ bệnh nhân",
+        "url": "/receptionist/patient-list"
+    }
+]
