@@ -1,0 +1,76 @@
+{% extends "base/employee_layout.html" %}
+{% load static %}
+
+{% block title %}Patient Profile{% endblock %}
+{% block page_title %}Patient Profile{% endblock %}
+
+{% block content %}
+<button id="backPatientBtn" type="button" class="btn btn-outline-secondary">
+        Quay lại
+</button>
+
+<div class="card shadow-sm p-3 mb-4">
+    <h5>Patient Information</h5>
+
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <p><strong>Name:</strong> <span id="patientName"></span></p>
+            <p><strong>Phone:</strong> <span id="patientPhone"></span></p>
+            <p><strong>Date of Birth:</strong> <span id="patientDOB"></span></p>
+            <p><strong>Address:</strong> <span id="patientAddress"></span></p>
+        </div>
+        <div class="text-end">
+            <button class="btn btn-primary" onclick="loadAppointmentsRecords()">
+                View Appointment Records
+            </button>
+        </div>
+        
+    </div>
+    <div class="card shadow-sm p-3">
+    <h5>Appointments</h5>
+
+    <table class="table mt-3" id="appointmentTable" style="display:none;">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Doctor</th>
+                <th>Status</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody id="appointmentBody"></tbody>
+    </table>
+
+    <div id="noAppointment" class="text-muted" style="display:none;">
+        Không có lịch khám
+    </div>
+</div>
+
+<div class="modal fade" id="appointmentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content p-3">
+
+            <h5>Appointment Detail</h5>
+
+            <p><strong>Patient:</strong> <span id="modalPatient"></span></p>
+            <p><strong>Doctor:</strong> <span id="modalDoctor"></span></p>
+            <p><strong>Date:</strong> <span id="modalDate"></span></p>
+            <p><strong>Time:</strong> <span id="modalTime"></span></p>
+            <p><strong>Symptoms:</strong> <span id="modalSymptoms"></span></p>
+            <p><strong>Status:</strong> <span id="modalStatus"></span></p>
+
+            <div class="text-end mt-3">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    Đóng
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/patient/patient_detail.js' %}"></script>
+{% endblock %}

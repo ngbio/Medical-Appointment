@@ -1,0 +1,68 @@
+
+{% extends "doctor/layout/layout.html" %}
+{% load static %}
+
+
+{% block title %}Appointment Detail{% endblock %}
+
+{% block page_title %}Appointment Detail{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm p-4">
+
+    <h5 class="mb-4">Appointment Detail</h5>
+
+    <div class="row mb-3">
+    <div class="col-md-6">
+        <strong>Patient:</strong>
+        <p id="patientName" class="mb-0">---</p>
+    </div>
+
+    <div class="col-md-6">
+        <strong>Doctor:</strong>
+        <p id="doctorName" class="mb-0">---</p>
+    </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <strong>Date:</strong>
+            <p id="appointmentDate" class="mb-0">---</p>
+        </div>
+
+        <div class="col-md-6">
+            <strong>Time:</strong>
+            <p id="startTime" class="mb-0">---</p>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <strong>Symptoms:</strong>
+            <p id="symptoms" class="mb-0">---</p>
+        </div>
+
+        <div class="col-md-6">
+            <strong>Status:</strong>
+            <p id="status" class="fw-bold text-primary mb-0">---</p>
+        </div>
+    </div>
+
+    <!-- Action -->
+    <div class="d-flex justify-content-between mt-4">
+        <button id="backBtn" type="button" class="btn btn-outline-secondary">
+            Go Back
+        </button>
+        
+        <button id="completeBtn" class="btn btn-success">
+            Finish Examination
+        </button>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/doctor/examination_detail.js' %}"></script>
+{% endblock %}

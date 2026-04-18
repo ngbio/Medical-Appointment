@@ -24,7 +24,13 @@
 
         <!-- Sidebar -->
         <div class="col-md-2 sidebar p-3">
-            {% include 'doctor/layout/sidebar.html' %}
+            {% comment %} <p>Current role: {{ request.user.role }}</p>
+            {% if request.user.role == "doctor" %}
+                {% include 'doctor/layout/sidebar.html' %}
+            {% elif request.user.role == "receptionist" %}
+                {% include 'receptionist/layout/sidebar.html' %}
+            {% endif %} {% endcomment %}
+            {% include "base/sidebar.html"%}
         </div>
 
         <!-- Main Content -->
@@ -33,7 +39,7 @@
             <!-- Header -->
             <div class="mb-4">
                 <h2>{% block page_title %}{% endblock %}</h2>
-                {% include 'doctor/layout/header.html' %}
+                {% include 'base/employee_header.html' %}
             </div>
 
             <!-- Page Content -->

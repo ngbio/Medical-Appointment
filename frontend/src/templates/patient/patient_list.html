@@ -1,0 +1,57 @@
+{% extends "base/employee_layout.html" %}
+{% load static %}
+
+{% block title %}Patient List{% endblock %}
+{% block page_title %}Patient List{% endblock %}
+
+{% block content %}
+
+<!-- Search -->
+<div class="card shadow-sm p-3 mb-4">
+    <div class="row align-items-end">
+
+        <div class="col-md-4">
+            <label class="form-label">Search</label>
+            <input type="text" id="searchInput" class="form-control"
+                   placeholder="Tên, số điện thoại...">
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Date of Birth</label>
+            <input type="date" id="dobInput" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100" onclick="loadPatients()">
+                Search
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<!-- Table -->
+<div class="card shadow-sm p-3">
+    <h5>Patient List</h5>
+
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>DOB</th>
+                <th>Address</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody id="patientTable">
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/patient/patient_list.js' %}"></script>
+{% endblock %}

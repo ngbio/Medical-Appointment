@@ -1,7 +1,47 @@
-{% extends 'base/layout.html' %}
+
+{% extends "doctor/layout/layout.html" %}
 {% load static %}
 
-{% block title %}Danh sách khám{% endblock %}
+
+{% block title %}Appointment List{% endblock %}
+
+{% block page_title %}Appointment List{% endblock %}
+
 {% block content %}
 
+<div class="card shadow-sm p-3">
+    <div class="row align-items-end">
+        <div class="col-md-4">
+            <h5 class="mb-4">Appointments:</h5>
+            <input type="date" id="appointmentDate" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100" onclick="loadAppointments()">
+                View Appointments
+            </button>
+        </div>
+    </div>
+    
+
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Patient</th>
+                <th>Status</th>
+                <th>Symptoms</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="appointmentTable">
+            <!-- JS render -->
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/doctor/examination_list.js' %}"></script>
 {% endblock %}

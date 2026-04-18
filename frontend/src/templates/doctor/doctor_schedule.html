@@ -1,0 +1,53 @@
+{% extends "doctor/layout/layout.html" %}
+{% load static %}
+
+{% block title %}Schedule{% endblock %}
+{% block page_title %}Schedule{% endblock %}
+
+{% block content %}
+
+<!-- Filter -->
+<div class="card shadow-sm p-3 mb-4">
+    <div class="row align-items-end">
+
+        <div class="col-md-4">
+            <label class="form-label">Select Date</label>
+            <input type="date" id="scheduleDate" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100" onclick="loadSchedule()">
+                View Schedule
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<!-- Result -->
+<div class="card shadow-sm p-3">
+    <h5>Working Schedule</h5>
+
+    <div id="noSchedule" class="text-muted mt-3" style="display:none;">
+        Không có lịch làm việc
+    </div>
+
+    <table class="table mt-3" id="scheduleTable" style="display:none;">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+            </tr>
+        </thead>
+        <tbody id="scheduleBody">
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/doctor/schedule.js' %}"></script>
+{% endblock %}
