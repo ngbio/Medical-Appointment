@@ -15,7 +15,7 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Thông tin cá nhân', {
-            'fields': ('first_name', 'last_name', 'fullname', 'email', 'gender')
+            'fields': ('first_name', 'last_name', 'fullname', 'email', 'gender', 'phone_number')
         }),
         ('Phân quyền', {
             'fields': ('role', 'is_active', 'is_staff', 'is_superuser')

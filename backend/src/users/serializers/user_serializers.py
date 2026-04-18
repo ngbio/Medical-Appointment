@@ -2,6 +2,7 @@ from rest_framework import serializers
 from users.models import RoleEnum, PatientProfile, User
 from django.db import transaction
 from rest_framework.exceptions import ValidationError
+import re
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -13,7 +14,18 @@ class UserSerializer(serializers.ModelSerializer):
             "password": {"write_only": True, },
             "role": {"read_only": True, },
         }
-        
+
+    def validate_email_syntax(self, value):
+        pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+        if not re.match(pattern, value):
+            raise ValidationError("Invalid email")
+        return value
+    
+    def validate_phone_number(self, value):
+        if not re.match(r'^\d{10,11}$', value):
+            raise serializers.ValidationError("Invalid phone number")
+        return value
+
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -22,7 +34,6 @@ class UserSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        avatar = validated_data.pop("avatar", None)
         password = validated_data.pop("password", None)
 
         # If create new user, auto create patient profile for them

@@ -41,6 +41,7 @@ urlpatterns = [
     path('', include('doctors.urls')),
     path('api/', include('menu.urls')),
     path('', include('appointments.urls')),
+    path('', include('receptionists.urls')),
     path('admin/', admin.site.urls),
     path("doctor/dashboard/", doctor_dashboard, name="doctor-dashboard"),
     re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),
