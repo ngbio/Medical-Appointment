@@ -15,6 +15,7 @@ from src.perms import IsAdmin
 from doctors.perms import IsDoctor
 from receptionists.perms import IsReceptionist
 from receptionists.serializers.receptionist_serializer import ReceptionistBookSerializer
+from appointments.services.query_service import get_base_queryset
 from django.shortcuts import render
 
 class AppointmentViewSet(viewsets.GenericViewSet,
@@ -43,10 +44,7 @@ class AppointmentViewSet(viewsets.GenericViewSet,
             return Appointment.objects.none()
 
         # Queryset cơ bản với select_related để tối ưu
-        queryset = Appointment.objects.select_related(
-            'doctor__user', 'patient__user', 'time_slot__schedule'
-        ).order_by('-time_slot__schedule__work_date', '-time_slot__start_time')
-
+        queryset = get_base_queryset().order_by('-work_date', '-slot_time')
 
         query_params = self.request.query_params
         status_param = query_params.get('status')
@@ -57,7 +55,7 @@ class AppointmentViewSet(viewsets.GenericViewSet,
             queryset = queryset.filter(status=status_param)
         if from_date and to_date:
             queryset = queryset.filter(
-                time_slot__schedule__work_date__range=[from_date, to_date]
+                work_date__range=[from_date, to_date]
             )
 
         if user.role == RoleEnum.PATIENT:
@@ -145,11 +143,9 @@ class AppointmentViewSet(viewsets.GenericViewSet,
         # today = "2026-04-18"
         # print(today)
 
-        queryset = Appointment.objects.select_related(
-            'doctor__user', 'patient__user', 'time_slot__schedule'
-        ).filter(
-            time_slot__schedule__work_date=today
-        ).order_by('time_slot__start_time')
+        queryset = get_base_queryset().filter(
+            work_date=today
+        ).order_by('slot_time')
 
         total = queryset.count()
         completed = queryset.filter(status=AppointmentStatus.COMPLETED).count()

@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     setDefaultDate();
     loadAppointments();
+    loadCurrentUser();
 });
 
 function setDefaultDate() {

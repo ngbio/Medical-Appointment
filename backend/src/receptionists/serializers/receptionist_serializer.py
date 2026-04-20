@@ -40,6 +40,15 @@ class ReceptionistBookSerializer(ModelSerializer):
         if not re.match(r'^\d{10,11}$', value):
             raise serializers.ValidationError("Invalid phone number")
         return value
+    def validate(self, attrs):
+        phone = attrs.get("phone_number")
+
+        existing_user = User.objects.filter(phone_number=phone).first()
+
+        if existing_user:
+            pass
+
+        return attrs
     
     def create(self, validated_data):
         phone = validated_data.pop("phone_number")

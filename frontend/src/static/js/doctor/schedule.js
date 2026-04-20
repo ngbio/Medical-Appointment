@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     setDefaultDate();
     loadSchedule(); // auto load hôm nay
+    loadCurrentUser();
 });
 
 function setDefaultDate() {

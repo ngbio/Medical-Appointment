@@ -12,6 +12,7 @@ from src.perms import IsPatient
 from appointments.models import Appointment
 from appointments.serializers.appointment_serializers import AppointmentSerializer
 from users.paginators import PatientProfilePagination
+from appointments.services.query_service import get_base_queryset
 
 class PatientProfileViewSet(viewsets.GenericViewSet,
                             mixins.RetrieveModelMixin,
@@ -87,12 +88,9 @@ class PatientProfileViewSet(viewsets.GenericViewSet,
     def appointments(self, request, pk=None):
         patient = self.get_object()
 
-        appointments = Appointment.objects.filter(
+        appointments = get_base_queryset().filter(
             patient=patient
-        ).select_related(
-            "doctor__user",
-            "time_slot__schedule"
-        ).order_by("-time_slot__schedule__work_date")
+        ).order_by("-work_date")
 
         serializer = AppointmentSerializer(appointments, many=True)
 
@@ -102,7 +100,7 @@ class PatientProfileViewSet(viewsets.GenericViewSet,
         })
     
 def patient_list(request):
-    print(request.user.role)
+    # print(request.user)
     return render(request, "patient/patient_list.html")
 
 def patient_detail(request, patient_id):

@@ -6,13 +6,6 @@ let currentStatus = 'scheduled';
 let nextPageUrl = null;
 let prevPageUrl = null;
 
-function getAuthHeaders() {
-    const token = localStorage.getItem("access_token");
-    return {
-        "Content-Type": "application/json",
-        "Authorization": token ? `Bearer ${token}` : ""
-    };
-}
 
 document.addEventListener('DOMContentLoaded', () => {
     cancelModalInstance = new bootstrap.Modal(document.getElementById('cancelModal'));
@@ -51,7 +44,7 @@ async function loadAppointments(fetchUrl = null) {
     const url = fetchUrl || `/appointments/?status=${currentStatus}`;
 
     try {
-        const res = await fetch(url, { headers: getAuthHeaders() });
+        const res = await authFetch(url);
         if (!res.ok) throw new Error("Lỗi mạng");
         const data = await res.json();
         
@@ -148,9 +141,8 @@ async function handleCancelAppointment() {
     btn.disabled = true;
 
     try {
-        const res = await fetch(`/appointments/${currentCancelId}/cancel/`, {
+        const res = await authFetch(`/appointments/${currentCancelId}/cancel/`, {
             method: 'PATCH',
-            headers: getAuthHeaders()
         });
 
         if (res.ok) {

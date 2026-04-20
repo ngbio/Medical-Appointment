@@ -38,16 +38,6 @@ async function loadDashboard() {
     }
 }
 
-async function loadCurrentUser() {
-    const token = localStorage.getItem("access_token");
-
-    if (!token) return;
-
-    const user = JSON.parse(token);
-    document.getElementById("doctorUserName").innerText =
-            `Welcome, Dr. ${user.username}`;
-}
-
 function goToExamination(appointmentId) {
     window.location.href = `/doctor/examination/${appointmentId}`;
 }

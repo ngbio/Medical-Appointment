@@ -14,6 +14,7 @@ from doctors.perms import IsDoctor
 from appointments.models import Appointment, AppointmentStatus
 from appointments.serializers.appointment_serializers import AppointmentSerializer
 from appointments.paginators import AppointmentsPagination
+from appointments.services.query_service import get_base_queryset
 
 class DoctorProfileViewSet(viewsets.GenericViewSet,
                            mixins.ListModelMixin,
@@ -95,11 +96,11 @@ class DoctorProfileViewSet(viewsets.GenericViewSet,
 
         # Today's appointments
         # today_qs = Appointment.objects.filter(doctor=doctor_profile, time_slot__schedule__work_date=today).select_related("patient__user", "time_slot__schedule")
-        today_count = Appointment.objects.filter(doctor=doctor_profile, time_slot__schedule__work_date=today).count()
+        today_count = get_base_queryset().filter(doctor=doctor_profile, work_date=today).count()
 
         # Scheduled appointments
         # scheduled_count = today_qs.filter(status=AppointmentStatus.BOOKED).count()
-        scheduled_qs = Appointment.objects.filter(doctor=doctor_profile, time_slot__schedule__work_date=today, status=AppointmentStatus.BOOKED)
+        scheduled_qs = get_base_queryset().filter(doctor=doctor_profile, work_date=today, status=AppointmentStatus.BOOKED)
         scheduled_count = scheduled_qs.count()
 
         paginator = AppointmentsPagination()
@@ -122,8 +123,7 @@ class DoctorProfileViewSet(viewsets.GenericViewSet,
         except DoctorProfile.DoesNotExist:
             raise ValidationError("Doctor profile does not exist.")
         
-        appointments_qs = Appointment.objects.filter(doctor=doctor_profile).select_related("patient__user", "time_slot__schedule").order_by("-time_slot__schedule__work_date", "-time_slot__start_time")
-
+        appointments_qs = get_base_queryset().filter(doctor=doctor_profile).order_by("-work_date", "-start_time")
         paginator = AppointmentsPagination()
         page = paginator.paginate_queryset(appointments_qs, request)
         serializer = AppointmentSerializer(page, many=True)

@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     loadPatients();
+    loadCurrentUser();
 });
 
 // Load Patients

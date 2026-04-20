@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+    loadCurrentUser();
     const patientId = getPatientId();
 
     if (!patientId) {

@@ -1,4 +1,5 @@
 const state = {
+  specialtyId: null,
   doctorId: null,
   doctorName: '',
   date: null,
@@ -22,42 +23,64 @@ function formatDate(dateStr) {
   return d.toLocaleDateString('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
-function getAuthHeaders() {
-  const token = localStorage.getItem("access_token");
-  const headers = { "Content-Type": "application/json" };
-  if (token) headers["Authorization"] = `Bearer ${token}`;
-  return headers; 
+/*Data Loading*/
+async function loadSpecialties() {
+  const res = await authFetch('/specialties/');
+  const data = await res.json();
+
+  const sel = document.getElementById("specialty-select");
+  sel.innerHTML = '<option selected disabled value="">— Chọn chuyên khoa —</option>';
+
+  (data.results || data).forEach(s => {
+    const opt = document.createElement("option");
+    opt.value = s.id;
+    opt.textContent = s.name;
+    sel.appendChild(opt);
+  });
 }
 
-   /*Data Loading*/
-async function loadDoctors() {
+
+async function loadDoctors(specialtyId = '') {
+  let url = '/doctors/';
+  if (specialtyId) url += `?speciality_id=${specialtyId}`;
+
   try {
-    const res = await fetch('/doctors/');
-    if (!res.ok) throw new Error();
+    const res = await authFetch(url);
     const data = await res.json();
+
     const sel = document.getElementById('doctor-select');
-    
-    while (sel.options.length > 1) sel.remove(1);
+
+    sel.innerHTML = '<option selected disabled value="">— Chọn bác sĩ —</option>';
+
     (data.results || data).forEach(d => {
-      const opt = document.createElement('option');
+      const opt = document.createElement("option");
       opt.value = d.id;
-      opt.textContent = d.user?.fullname || d.fullname || 'Bác sĩ';
+      opt.textContent = d.fullname;
       sel.appendChild(opt);
     });
+
   } catch {
-    console.warn('Không tải được danh sách bác sĩ');
+    showAlert('Không tải được danh sách bác sĩ');
   }
+}
+
+async function onSpecialtyChange(sel) {
+  state.specialtyId = sel.value;
+
+  await loadDoctors(state.specialtyId);
+
+  resetAfterDoctor();
 }
 
 async function onDoctorChange(sel) {
   const opt = sel.options[sel.selectedIndex];
   state.doctorId = sel.value;
   state.doctorName = opt.textContent;
-// UI
+  // UI
   state.date = null;
   state.scheduleId = null;
   state.slotId = null;
-  
+
   document.getElementById('timeslot-empty').classList.remove('d-none');
   document.getElementById('timeslot-content').classList.add('d-none');
   document.getElementById('btn-confirm').disabled = true;
@@ -68,14 +91,13 @@ async function onDoctorChange(sel) {
 async function loadDates(doctorId) {
   const sel = document.getElementById('select-date');
   sel.disabled = true;
-  
+
   while (sel.options.length > 1) sel.remove(1);
   const placeholder = sel.options[0];
   placeholder.text = '— Đang tải... —';
 
   try {
-    const res = await fetch(`/schedules/by-doctor/?doctor_id=${doctorId}`);
-    if (!res.ok) throw new Error();
+    const res = await authFetch(`/schedules/by-doctor/?doctor_id=${doctorId}`);
     const data = await res.json();
     const schedules = data.results || data;
 
@@ -100,7 +122,7 @@ async function onDateChange(sel) {
   state.date = sel.value;
   state.dateLabel = opt.textContent;
   state.scheduleId = opt.dataset.scheduleId;
-  
+
   state.slotId = null;
   state.slotTime = '';
   document.getElementById('btn-confirm').disabled = true;
@@ -116,18 +138,21 @@ async function loadTimeSlots() {
   const empty = document.getElementById('timeslot-empty');
   const loading = document.getElementById('timeslot-loading');
   const content = document.getElementById('timeslot-content');
-  
+
   empty.classList.add('d-none');
   content.classList.add('d-none');
   loading.classList.remove('d-none');
 
   try {
-    const res = await fetch(`/schedules/available-slots/?schedule_id=${state.scheduleId}`);
-    if (!res.ok) throw new Error();
+    const res = await authFetch(`/schedules/available-slots/?schedule_id=${state.scheduleId}`);
     const data = await res.json();
+
     renderSlots(data.results || data);
+
   } catch {
-    loading.innerHTML = '<p class="text-danger">Không tải được lịch</p>';
+    showAlert("Không tải được lịch khám");
+  } finally {
+    loading.classList.add('d-none');
   }
 }
 
@@ -161,14 +186,19 @@ function renderSlots(slots) {
   const renderBtn = (slot, container) => {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.textContent = slot.start_time?.slice(0, 5) || slot.start_time;
-   
-    btn.className = 'btn btn-outline-primary slot-btn';
-    btn.addEventListener('click', () => selectSlot(btn, slot));
+    btn.textContent = slot.start_time?.slice(0, 5);
+
+    if (slot.status === 'booked') {
+      btn.className = 'btn btn-secondary slot-btn disabled';
+      btn.disabled = true;
+    } else {
+      btn.className = 'btn btn-outline-primary slot-btn';
+      btn.addEventListener('click', () => selectSlot(btn, slot));
+    }
 
     container.appendChild(btn);
   };
-//sang chieu
+  //sang chieu
   morning.forEach(s => renderBtn(s, morningGrid));
   afternoon.forEach(s => renderBtn(s, afternoonGrid));
 }
@@ -187,7 +217,7 @@ function selectSlot(btn, slot) {
 }
 
 
-   //Submit Form
+//Submit Form
 async function handleAppointment() {
   const btn = document.getElementById('btn-confirm');
   const btnText = document.getElementById('btn-confirm-text');
@@ -213,15 +243,14 @@ async function handleAppointment() {
   };
 
   try {
-    const res = await fetch('/appointments/', {
+    const res = await authFetch('/appointments/', {
       method: 'POST',
-      headers: getAuthHeaders(),
       body: JSON.stringify(payload),
     });
 
     if (res.ok || res.status === 201) {
       document.getElementById('modal-desc').innerHTML = `Lịch khám ngày <b>${state.dateLabel}</b> lúc <b>${state.slotTime}</b> với <b>${state.doctorName}</b> đã được xác nhận.`;
-      
+
       // Gọi Modal Bt
       const successModal = new bootstrap.Modal(document.getElementById('successModal'));
       successModal.show();
@@ -237,8 +266,24 @@ async function handleAppointment() {
     btnText.textContent = 'Xác nhận đặt lịch';
   }
 }
+function resetAfterDoctor() {
+  state.date = null;
+  state.scheduleId = null;
+  state.slotId = null;
+  state.slotTime = '';
+
+  document.getElementById('select-date').innerHTML =
+    '<option selected disabled value="">— Chọn ngày —</option>';
+
+  document.getElementById('timeslot-empty').classList.remove('d-none');
+  document.getElementById('timeslot-content').classList.add('d-none');
+
+  document.getElementById('btn-confirm').disabled = true;
+}
+
 
 //init
-document.addEventListener('DOMContentLoaded', () => {
-  loadDoctors();
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadSpecialties();
+  await loadDoctors();
 });

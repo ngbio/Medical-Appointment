@@ -24,7 +24,12 @@ Chúng tôi áp dụng **Client–Server Architecture**. Kiến trúc này bao g
 
 ### Client
 
-Client được xây dựng dưới dạng **Web User Interface sử dụng React**.
+Client được xây dựng dưới dạng:
+
+**- Django Template (server-side rendering)**
+**- JavaScript (Fetch API)**
+
+*Trong một số trường hợp, client tương tác với backend thông qua REST API*
 
 Chức năng của client bao gồm:
 

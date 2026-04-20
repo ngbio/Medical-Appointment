@@ -20,6 +20,8 @@ document.addEventListener("DOMContentLoaded", function () {
         .addEventListener("click", () => {
             window.location.href = "/doctor/dashboard/";
         });
+    
+        loadCurrentUser();
 });
 
 // Get appointment_id from URL

@@ -227,6 +227,7 @@ function resetAfterDoctor() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  loadCurrentUser();
   await loadSpecialties();
   await loadDoctors();
 });

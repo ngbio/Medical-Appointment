@@ -24,12 +24,6 @@
 
         <!-- Sidebar -->
         <div class="col-md-2 sidebar p-3">
-            {% comment %} <p>Current role: {{ request.user.role }}</p>
-            {% if request.user.role == "doctor" %}
-                {% include 'doctor/layout/sidebar.html' %}
-            {% elif request.user.role == "receptionist" %}
-                {% include 'receptionist/layout/sidebar.html' %}
-            {% endif %} {% endcomment %}
             {% include "base/sidebar.html"%}
         </div>
 
@@ -55,6 +49,7 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/doctor/header.js' %}"></script>
 <script src="{% static 'js/base/sidebar.js' %}"></script>
 
 <script src="{% static 'js/auth/api.js' %}"></script>
