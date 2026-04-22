@@ -27,6 +27,9 @@ EXPOSE 8000
 # Set working directory to Django project
 WORKDIR /app/backend/src
 
-# Run Django app
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Create entrypoint script
+COPY docker-entrypoint.sh /app/
+RUN chmod +x /app/docker-entrypoint.sh
 
+# Run Django app (default)
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
