@@ -1,7 +1,7 @@
 from rest_framework.pagination import CursorPagination
 
 class DoctorProfileCursorPagination(CursorPagination):
-    page_size = 9
+    page_size = 6
     ordering = 'specialty_id'
 
 class SpecialtyCursorPagination(CursorPagination):

@@ -2,11 +2,13 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.exceptions import ValidationError
 from ..models import DoctorProfile
 from users.models import RoleEnum
+from rest_framework import serializers
 
 class DoctorProfileSerializer(ModelSerializer):
+    fullname = serializers.CharField(source='user.fullname', read_only=True)
     class Meta:
         model = DoctorProfile
-        fields = ['id', 'user', 'specialty', 'bio', 'experience_years']
+        fields = ['id', 'user', 'fullname', 'specialty', 'bio', 'experience_years']
         read_only_fields = ['id', 'user']
 
     def validate_experience_years(self, value):

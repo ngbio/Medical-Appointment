@@ -85,7 +85,15 @@ def register_page(request):
     return render(request, "auth/register.html")
 
 def booking_page(request):
-    return render(request, "appointment/booking.html")
+    return render(request, "patient/booking.html")
+
+
+def my_appointment_page(request):
+    return render(request, 'patient/my_appointments.html')
+
+def doctor_list_page(request):
+    return render(request, 'patient/doctor_list.html')    
+   
 
 def infor_users(request):
     return render(request, "auth/infor_user.html")

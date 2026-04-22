@@ -1,4 +1,27 @@
-document.addEventListener("DOMContentLoaded", loadMenu);
+document.addEventListener("DOMContentLoaded", function () {
+    loadSidebarHeader();
+    loadMenu();
+});
+async function loadSidebarHeader() {
+    const userStr = localStorage.getItem("user");
+    let user = userStr ? JSON.parse(userStr) : null;
+
+    if (!user) {
+        const res = await authFetch("/users/current-user/");
+        user = await res.json();
+        localStorage.setItem("user", JSON.stringify(user));
+    }
+
+    const panel = document.getElementById("sidebarPanel");
+
+    if (user.role === "doctor") {
+        panel.innerHTML = `<h4 class="text-white mb-4">Doctor Panel</h4>`;
+    }
+
+    if (user.role === "receptionist") {
+        panel.innerHTML = `<h4 class="text-white mb-4">Receptionist Panel</h4>`;
+    }
+}
 
 async function loadMenu() {
     const token = localStorage.getItem("access_token");

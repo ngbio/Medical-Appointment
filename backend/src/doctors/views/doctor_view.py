@@ -11,7 +11,10 @@ from ..paginators import DoctorProfileCursorPagination
 from src.perms import IsOwner
 from users.models import RoleEnum
 from doctors.perms import IsDoctor
-from appointments.models import Appointment
+from appointments.models import Appointment, AppointmentStatus
+from appointments.serializers.appointment_serializers import AppointmentSerializer
+from appointments.paginators import AppointmentsPagination
+from appointments.services.query_service import get_base_queryset
 
 class DoctorProfileViewSet(viewsets.GenericViewSet,
                            mixins.ListModelMixin,
@@ -92,36 +95,49 @@ class DoctorProfileViewSet(viewsets.GenericViewSet,
         today = now().date()
 
         # Today's appointments
-        today_count = Appointment.objects.filter(
-            doctor=doctor_profile,
-            time_slot__schedule__work_date=today
-        ).count()
+        # today_qs = Appointment.objects.filter(doctor=doctor_profile, time_slot__schedule__work_date=today).select_related("patient__user", "time_slot__schedule")
+        today_count = get_base_queryset().filter(doctor=doctor_profile, work_date=today).count()
 
-        # Upcoming appointments
-        upcoming = Appointment.objects.filter(
-            doctor=doctor_profile,
-            time_slot__schedule__work_date__gte=today
-        ).select_related(
-            "patient__user",
-            "time_slot__schedule"
-        ).order_by("time_slot__schedule__work_date", "time_slot__start_time")
+        # Scheduled appointments
+        # scheduled_count = today_qs.filter(status=AppointmentStatus.BOOKED).count()
+        scheduled_qs = get_base_queryset().filter(doctor=doctor_profile, work_date=today, status=AppointmentStatus.BOOKED)
+        scheduled_count = scheduled_qs.count()
 
-        return Response({
+        paginator = AppointmentsPagination()
+        page = paginator.paginate_queryset(scheduled_qs, request)
+        serializer = AppointmentSerializer(page, many=True)
+        response = paginator.get_paginated_response(serializer.data)
+
+        response.data.update({
             "today_count": today_count,
-            "upcoming_count": upcoming.count(),
-            "appointments": [
-                {   
-                    "id": a.id,
-                    "patient": a.patient.user.fullname,
-                    # "date": str(a.time_slot.schedule.work_date),
-                    "time": str(a.time_slot.start_time),
-                    "status": a.status
-                }
-                for a in upcoming[:5]
-            ]
+            "scheduled_count": scheduled_count,
         })
 
+        return response
+    
+    def examination_list(self, request):
+        user = request.user
+
+        try:
+            doctor_profile = DoctorProfile.objects.get(user_id=user.id)
+        except DoctorProfile.DoesNotExist:
+            raise ValidationError("Doctor profile does not exist.")
+        
+        appointments_qs = get_base_queryset().filter(doctor=doctor_profile).order_by("-work_date", "-start_time")
+        paginator = AppointmentsPagination()
+        page = paginator.paginate_queryset(appointments_qs, request)
+        serializer = AppointmentSerializer(page, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
 
 def doctor_dashboard(request):
     return render(request, "doctor/dashboard_doctor.html")
+
+def doctor_schedule(request):
+    return render(request, "doctor/doctor_schedule.html")
+
+def doctor_examination_list(request):
+    return render(request, "doctor/appointment_list.html")
+
+def doctor_examination_detail(request, appointment_id):
+    return render(request, "doctor/appointment_detail.html", {"appointment_id": appointment_id} )

@@ -1,0 +1,94 @@
+{% extends "base/employee_layout.html" %}
+{% load static %}
+
+{% block title %}Book Appointment For Patient{% endblock %}
+{% block page_title %}Book Appointment For Patient{% endblock %}
+
+{% block content %}
+
+<div class="row g-4">
+
+    <!-- LEFT COLUMN -->
+    <div class="col-md-6">
+
+        <!-- 1. PATIENT INFORMATION -->
+        <div class="card shadow-sm p-3 mb-4">
+            <h5 class="mb-3 ">1. Patient Information</h5>
+
+            <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+            <input id="inputPhone" class="form-control mb-2">
+
+            <label class="form-label">Full Name <span class="text-danger">*</span></label>
+            <input id="inputName" class="form-control mb-2">
+
+            <label class="form-label">Email</label>
+            <input id="inputEmail" class="form-control mb-2">
+
+            <button class="btn btn-outline-primary btn-sm mt-2"
+                    onclick="searchPatient()">
+                Search Patient
+            </button>
+        </div>
+
+        <!-- 2. MEDICAL INFORMATION -->
+        <div class="card shadow-sm p-3">
+            <h5 class="mb-3 ">2. Medical Information</h5>
+
+            <label class="form-label">Symptoms <span class="text-danger">*</span></label>
+            <textarea id="inputSymptoms" class="form-control mb-3"></textarea>
+
+            <label class="form-label">Notes</label>
+            <textarea id="inputNotes" class="form-control mb-3"></textarea>
+
+            <button class="btn btn-primary w-100"
+                    onclick="handleBooking()" id="btnSubmit" disabled>
+                Book Appointment
+            </button>
+        </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="col-md-6">
+
+        <!-- 3. APPOINTMENT INFORMATION -->
+        <div class="card shadow-sm p-3 mb-4">
+            <h5 class="mb-3 ">3. Appointment Information</h5>
+
+            <label class="form-label">Specialty</label>
+            <select id="specialtySelect" class="form-select mb-2"
+                    onchange="onSpecialtyChange(this)">
+                <option value="">-- Select Specialty --</option>
+            </select>
+
+            <label class="form-label">Doctor <span class="text-danger">*</span></label>
+            <select id="doctorSelect" class="form-select mb-2"
+                    onchange="onDoctorChange(this)">
+                <option value="">-- Select Doctor --</option>
+            </select>
+
+            <label class="form-label">Appointment Date <span class="text-danger">*</span></label>
+            <select id="dateSelect" class="form-select"
+                    onchange="onDateChange(this)" disabled>
+                <option value="">-- Select Date --</option>
+            </select>
+        </div>
+
+        <!-- 4. AVAILABLE SLOTS -->
+        <div class="card shadow-sm p-3">
+            <h5 class="">4. Available Time Slots</h5>
+
+            <div id="slotContainer" class="mt-3">
+                <p class="text-muted">Please select doctor and date</p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/receptionist/book_for_patient.js' %}"></script>
+{% endblock %}

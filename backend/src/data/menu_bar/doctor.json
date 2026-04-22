@@ -8,11 +8,11 @@
         "url": "/doctor/schedule"
     },
     {
-        "name": "Danh sách chờ",
-        "url": "/doctor/waiting-list"
+        "name": "Danh sách khám",
+        "url": "/doctor/examination-list"
     },
     {
-        "name": "Khám bệnh",
-        "url": "/doctor/examination"
+        "name": "Hồ sơ bệnh nhân",
+        "url": "/doctor/patient-list"
     }
 ]

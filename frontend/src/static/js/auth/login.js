@@ -16,6 +16,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 async function login() {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user");
 
     const form = document.getElementById("loginForm");
     const formDataObj = new FormData(form);
@@ -70,14 +72,24 @@ async function login() {
             });
 
             const user = await userRes.json();
+            localStorage.setItem("user", JSON.stringify(user));
 
             alertBox.innerHTML = `
             <div class="alert alert-success">
                 Đăng nhập thành công!
             </div>`;
 
+            
+
             // redirect based on role after short delay
             setTimeout(() => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const next = urlParams.get("next");
+
+                if (next && user.role === "patient") {
+                    window.location.href = next;
+                    return;
+                }
 
                 switch (user.role) {
                     case "doctor":

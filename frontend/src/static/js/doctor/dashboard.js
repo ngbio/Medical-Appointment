@@ -3,55 +3,29 @@ document.addEventListener("DOMContentLoaded", function () {
     loadCurrentUser();
 });
 
-// Load Dashboard Data
 async function loadDashboard() {
-    const token = localStorage.getItem("access_token");
-
-    if (!token) {
-        window.location.href = "/login/";
-        return;
-    }
-
     try {
-        const res = await fetch("/doctors/dashboard/", {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
-
-        if (res.status === 401) {
-            localStorage.removeItem("access_token");
-            window.location.href = "/login/";
-            return;
-        }
-
-        if (res.status === 403) {
-            alert("Bạn không phải Doctor!");
-            window.location.href = "/";
-            return;
-        }
-
+        const res = await authFetch("/doctors/dashboard/");
         const data = await res.json();
 
-        // Count
         document.getElementById("todayCount").innerText = data.today_count;
-        document.getElementById("upcomingCount").innerText = data.upcoming_count;
+        document.getElementById("scheduledCount").innerText = data.scheduled_count;
 
-        // Table
         const table = document.getElementById("appointmentTable");
-        document.getElementById("currentDate").innerText = new Date().toLocaleDateString();
-
         table.innerHTML = "";
 
-        data.appointments.forEach(a => {
+        data.results.forEach(a => {
+            const statusClass = a.status === "completed" ? "text-success" : "text-primary";
+
+            const buttonDisabled = a.status === "completed" ? "disabled d-none" : "";
             table.innerHTML += `
                 <tr>
-                    <td>${a.time}</td>
-                    <td>${a.patient}</td>
-                    <td>${a.status}</td>
+                    <td>${a.start_time}</td>
+                    <td>${a.patient_name}</td>
+                    <td class="fw-bold ${statusClass}">${a.status}</td>
                     <td>
                         <button class="btn btn-primary btn-sm"
-                            onclick="goToExamination(${a.id})">
+                            onclick="goToExamination(${a.id})" ${buttonDisabled}>
                             Khám bệnh
                         </button>
                     </td>
@@ -64,23 +38,6 @@ async function loadDashboard() {
     }
 }
 
-// Load User Info
-async function loadCurrentUser() {
-    const token = localStorage.getItem("access_token");
-
-    if (!token) return;
-
-    const user = JSON.parse(token);
-    document.getElementById("doctorName").innerText =
-            `Welcome, Dr. ${user.username}`;
-}
-
-
 function goToExamination(appointmentId) {
-    window.location.href = `/doctor/examination/?appointment_id=${appointmentId}`;
-}
-
-function logout() {
-    localStorage.removeItem("access_token");
-    window.location.href = "/login/";
+    window.location.href = `/doctor/examination/${appointmentId}`;
 }

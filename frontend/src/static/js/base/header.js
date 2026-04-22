@@ -80,6 +80,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 function handleLogout() {
     localStorage.removeItem("access_token");
+    localStorage.removeItem("user");
     // Gọi Django logout view để xóa server session
     fetch("/logout/", { method: "GET" })
         .then(() => {
@@ -89,3 +90,4 @@ function handleLogout() {
             window.location.href = "/index/";
         });
 }
+

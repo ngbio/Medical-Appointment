@@ -3,51 +3,92 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center text-info fw-bold mb-4">Thông tin tài khoản</h2>
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-12">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4 position-relative">
+                    <button type="button" class="btn btn-sm btn-outline-primary position-absolute top-0 end-0 m-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                        <i class="bi bi-pencil-square"></i> Chỉnh sửa
+                    </button>
 
-    <div id="userInfoContainer">
-        <div class="row justify-content-center">
-            <div class="col-lg-6 col-md-8 col-sm-12">
-                <div class="card shadow-lg border-0 rounded-4">
-                    <div class="card-body p-4">
-                        <button type="button" class="btn btn-sm btn-primary position-absolute top-0 end-0 m-2 "><a
-                                href="/user/infor" style="color: white; text-decoration: none;">Sửa</a></button>
-
-                        <div class="text-center mb-4">
-                            <img id="userAvatar" width="128px" height="128px" src="" class="rounded-circle shadow"
-                                 alt="Avatar">
-                        </div>
-
-                        <h4 id="userFullname" class="text-center fw-bold mb-3"></h4>
-
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><strong>Tên đăng nhập:</strong> <span id="userUsername"></span></li>
-                            <li class="list-group-item"><strong>Email:</strong> <span id="userEmail"></span></li>
-                            <li class="list-group-item"><strong>Số điện thoại:</strong> <span id="userPhone"></span></li>
-                            <li class="list-group-item"><strong>Giới tính:</strong> <span id="userGender"></span></li>
-                        </ul>
-
+                    <div class="text-center mb-4 mt-2">
+                        <img id="userAvatar" width="120px" height="120px" src="" class="rounded-circle shadow-sm" alt="Avatar">
+                        <h4 id="displayFullname" class="fw-bold mt-3 mb-1">Đang tải...</h4>
+                        <span id="displayUsername" class="text-muted"></span>
                     </div>
+
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Email:</strong> <span id="displayEmail">---</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Số điện thoại:</strong> <span id="displayPhone">---</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Giới tính:</strong> <span id="displayGender">---</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Ngày sinh:</strong> <span id="displayDob">---</span>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Địa chỉ:</strong> <span id="displayAddress">---</span>
+                        </li>
+                    </ul>
                 </div>
-
             </div>
-        </div>
-    </div>
-
-    <div id="patientsContainer" class="mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 id="patientsTitle" class="text-info fw-bold mb-0">Hồ sơ bệnh nhân</h2>
-        </div>
-
-        <div id="patientsList" class="row">
-            <!-- Danh sách bệnh nhân sẽ được render ở đây -->
-        </div>
-
-        <div id="patientsEmpty" class="alert alert-danger text-center mt-4" style="display:none;">
-            Không có hồ sơ nào!
         </div>
     </div>
 </div>
 
-<script src="{% static 'auth/js/infor-user.js' %}"></script>
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Cập nhật thông tin</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editProfileForm">
+                <div class="modal-body">
+                    <div id="formAlert" class="alert alert-danger d-none"></div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Họ và tên</label>
+                        <input type="text" class="form-control" id="inputFullname" required>
+                    </div>
+                    
+                    <div class="row">
+                       <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Số điện thoại</label>
+                            <input type="tel" class="form-control" id="inputPhone" 
+                                pattern="[0-9]{10}" 
+                                title="Vui lòng nhập số điện thoại hợp lệ" 
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
+                                required>
+                        </div>
+                       <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Giới tính</label>
+                            <input type="text" class="form-control bg-light" id="inputGender" readonly>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Ngày sinh</label>
+                        <input type="date" class="form-control" id="inputDob">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Địa chỉ</label>
+                        <textarea class="form-control" id="inputAddress" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary" id="btnSaveProfile">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/auth/infor-user.js' %}" defer></script>
 {% endblock %}

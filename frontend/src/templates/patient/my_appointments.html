@@ -1,0 +1,60 @@
+{% extends 'base/layout.html' %}
+{% load static %}
+
+{% block title %}Lịch hẹn của tôi{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="mb-4">
+        <h2 class="fw-bold">Lịch hẹn của tôi</h2>
+        <p class="text-muted">Quản lý và theo dõi các lịch khám sắp tới của bạn</p>
+    </div>
+
+    <ul class="nav nav-pills mb-4 gap-2" id="appointment-filters">
+        <li class="nav-item">
+            <button class="nav-link active fw-semibold" data-status="scheduled">Sắp tới</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link fw-semibold" data-status="completed">Đã khám</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link fw-semibold" data-status="canceled">Đã hủy</button>
+        </li>
+    </ul>
+
+    <div id="appointment-list" class="row g-4"></div>
+
+    <div id="pagination-controls" class="d-flex justify-content-center gap-3 mt-5 d-none">
+        <button id="prev-btn" class="btn btn-outline-primary fw-semibold px-4">
+            <i class="bi bi-arrow-left me-2"></i>Trang trước
+        </button>
+        <button id="next-btn" class="btn btn-outline-primary fw-semibold px-4">
+            Trang tiếp<i class="bi bi-arrow-right ms-2"></i>
+        </button>
+    </div>
+</div>
+
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-danger">Xác nhận hủy lịch</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn hủy lịch khám này không? Hành động này không thể hoàn tác.
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-light fw-semibold" data-bs-dismiss="modal">Quay lại</button>
+                <button type="button" class="btn btn-danger fw-semibold" id="confirm-cancel-btn">Xác nhận hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    textarea { resize: none; }
+</style>
+
+<script src="{% static 'js/patient/my_appointments.js' %}" defer></script>
+{% endblock %}
