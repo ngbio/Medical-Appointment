@@ -15,17 +15,54 @@ class UserSerializer(serializers.ModelSerializer):
             "role": {"read_only": True, },
         }
 
-    def validate_email_syntax(self, value):
-        pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
-        if not re.match(pattern, value):
-            raise ValidationError("Invalid email")
-        return value
-    
-    def validate_phone_number(self, value):
-        if not re.match(r'^\d{10,11}$', value):
-            raise serializers.ValidationError("Invalid phone number")
+
+    def validate_username(self, value):
+        """Validate username"""
+        if not value:
+            raise ValidationError("Tên đăng nhập không được để trống!")
+        if len(value) < 3:
+            raise ValidationError("Tên đăng nhập phải ít nhất 3 ký tự!")
+        if len(value) > 50:
+            raise ValidationError("Tên đăng nhập không được vượt quá 50 ký tự!")
+        if not re.match("^[a-zA-Z0-9_]*$", value):
+            raise ValidationError("Tên đăng nhập chỉ chứa chữ, số và dấu gạch dưới!")
         return value
 
+    def validate_password(self, value):
+        """Validate password"""
+        if not value:
+            raise ValidationError("Mật khẩu không được để trống!")
+        if len(value) < 6:
+            raise ValidationError("Mật khẩu phải ít nhất 6 ký tự!")
+        return value
+
+    def validate_email(self, value):
+        """Validate email"""
+        if value and not re.match(r'^[^@]+@[^@]+\.[^@]+$', value):
+            raise ValidationError("Email không hợp lệ!")
+        return value
+
+    def validate_phone_number(self, value):
+        """Validate phone number"""
+        if not value:
+            raise ValidationError("Số điện thoại không được để trống!")
+        if not re.match(r'^[0-9]{10,11}$', value):
+            raise ValidationError("Số điện thoại phải là 10-11 chữ số!")
+        return value
+
+    def validate_fullname(self, value):
+        """Validate fullname"""
+        if value and len(value) > 255:
+            raise ValidationError("Họ tên không được vượt quá 255 ký tự!")
+        return value
+
+    def validate(self, data):
+        """Validate entire data"""
+        if 'gender' in data and data['gender'] not in dict(data.get('gender', 'choices', [])):
+            if data['gender'] not in ['male', 'female']:
+                raise ValidationError({"gender": "Giới tính không hợp lệ! Chọn 'male' hoặc 'female'"})
+        return data
+>>>>>>> feature/docker-setup
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
