@@ -62,7 +62,6 @@ class UserSerializer(serializers.ModelSerializer):
             if data['gender'] not in ['male', 'female']:
                 raise ValidationError({"gender": "Giới tính không hợp lệ! Chọn 'male' hoặc 'female'"})
         return data
->>>>>>> feature/docker-setup
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
