@@ -187,8 +187,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CLIENT_ID = 'ixMj1leprQBGKdWuN9W5oHgoaHjvDRZyJF0Vrie1'
-CLIENT_SECRET = 'qiqieoOL8tsHwMhuluVMujSC2J4vlsBzJrtMj6QqQkCzNrEkpf9pMOMeRdLnPV9rUL94bwFonfGibL8IUNvVR1WJw4hQ6WGvbN7bBwnGoiqUCdf5AqcdhkbyGEzQiI5o'
+# CLIENT_ID = 'ixMj1leprQBGKdWuN9W5oHgoaHjvDRZyJF0Vrie1'
+# CLIENT_SECRET = 'qiqieoOL8tsHwMhuluVMujSC2J4vlsBzJrtMj6QqQkCzNrEkpf9pMOMeRdLnPV9rUL94bwFonfGibL8IUNvVR1WJw4hQ6WGvbN7bBwnGoiqUCdf5AqcdhkbyGEzQiI5o'
+CLIENT_ID = os.getenv("OAUTH_CLIENT_ID")
+CLIENT_SECRET = os.getenv("OAUTH_CLIENT_SECRET")
 
 # Email (SMTP) - can set via environment variables
 EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
