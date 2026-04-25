@@ -16,6 +16,18 @@ else
     echo "Skipping collectstatic..."
 fi
 
+python manage.py shell -c "
+from django.contrib.auth import get_user_model
+User = get_user_model()
+if not User.objects.filter(username='$DJANGO_SUPERUSER_USERNAME').exists():
+    User.objects.create_superuser('$DJANGO_SUPERUSER_USERNAME', '$DJANGO_SUPERUSER_EMAIL', '$DJANGO_SUPERUSER_PASSWORD')
+    print('Superuser created')
+else:
+    print('Superuser already exists')
+"
+
+python data.py
+
 # Run the appropriate service based on CELERY_COMMAND env var
 if [ "$CELERY_COMMAND" = "worker" ]; then
     echo "Starting Celery Worker..."
