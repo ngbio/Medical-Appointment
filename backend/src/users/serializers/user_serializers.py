@@ -3,6 +3,8 @@ from users.models import RoleEnum, PatientProfile, User
 from django.db import transaction
 from rest_framework.exceptions import ValidationError
 import re
+from django.conf import settings
+from users.tasks import send_email_confirmation
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -14,6 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
             "password": {"write_only": True, },
             "role": {"read_only": True, },
         }
+
 
 
     def validate_username(self, value):
@@ -63,6 +66,7 @@ class UserSerializer(serializers.ModelSerializer):
                 raise ValidationError({"gender": "Giới tính không hợp lệ! Chọn 'male' hoặc 'female'"})
         return data
 
+
     def to_representation(self, instance):
         data = super().to_representation(instance)
         if instance.avatar:
@@ -78,6 +82,15 @@ class UserSerializer(serializers.ModelSerializer):
             if password:
                 u.set_password(password)
             u.save()
+
+        request = self.context.get("request")
+        if request is not None:
+            confirmation_url = request.build_absolute_uri(f"/confirm-email/{u.fullname}/")
+        else:
+            confirmation_url = ""
+
+        # Send confirmation email asynchronously
+        send_email_confirmation.delay(u.id, confirmation_url)
 
         return u
 

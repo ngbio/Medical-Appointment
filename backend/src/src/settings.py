@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'rest_framework',
     'oauth2_provider',
+    'django_celery_beat',
     'users',
     'doctors',
     'appointments',
@@ -177,5 +178,33 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CLIENT_ID = 'LV6sCYhLWSH0ayMdfgO0c3CMLZn7zFUSDMJmOsOc'
-CLIENT_SECRET = 'vpCYtTFRsFy47xmlNQ6Gpv1NAo9RgUmTYRfAr2UsaqwvsYCtD5Y5C9yRnYFOfVqZsbxDQKDooNHPXPoYr93YmVKHl1hM0M4wJNNaE0LmVXPt0FW1Yg8GiqUkPpLoGLmq'
+CLIENT_ID = 'ixMj1leprQBGKdWuN9W5oHgoaHjvDRZyJF0Vrie1'
+CLIENT_SECRET = 'qiqieoOL8tsHwMhuluVMujSC2J4vlsBzJrtMj6QqQkCzNrEkpf9pMOMeRdLnPV9rUL94bwFonfGibL8IUNvVR1WJw4hQ6WGvbN7bBwnGoiqUCdf5AqcdhkbyGEzQiI5o'
+
+# Email (SMTP) - can set via environment variables
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
+
+# ============= CELERY CONFIGURATION =============
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'amqp://guest:guest@localhost:5672//')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'rpc://')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_BEAT_SCHEDULE = {
+    # Ví dụ: Check appointment reminder mỗi giờ
+    # 'check-appointment-reminders': {
+    #     'task': 'appointments.tasks.send_appointment_reminders',
+    #     'schedule': crontab(minute=0),  # Chạy mỗi giờ
+    # },
+}
+
