@@ -25,6 +25,7 @@ elif [ "$CELERY_COMMAND" = "beat" ]; then
     exec celery -A src beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
 else
     echo "Starting Django Server..."
-    exec python manage.py runserver 0.0.0.0:8000
+    # exec python manage.py runserver 0.0.0.0:8000
+    exec gunicorn src.wsgi:application --bind 0.0.0.0:8000
 fi
 
