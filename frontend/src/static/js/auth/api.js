@@ -11,7 +11,7 @@ async function authFetch(url, options = {}) {
         return;
     }
 
-    const res = await fetch(url, {
+    const res = await fetch(`https://medical-appointment-q26y.onrender.com/${url}`, {
         ...options,
         headers: {
             "Content-Type": "application/json",
