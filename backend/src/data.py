@@ -6,13 +6,15 @@ django.setup()
 
 from datetime import date, time, datetime, timedelta
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from users.models import RoleEnum, GenderEnum
 from doctors.models import Specialty, DoctorProfile, DoctorSchedule, TimeSlot, SlotStatus
 from appointments.models import Appointment, AppointmentStatus
 
 User = get_user_model()
 
-if User.objects.filter(username__startswith=("patient", "doctor")).exists():
+
+if User.objects.filter(Q(username__startswith="patient") | Q(username__startswith="doctor")).exists():
     print("=== DATA ĐÃ TỒN TẠI, BỎ QUA SEED ===")
 else:
 
