@@ -22,15 +22,15 @@ async function authFetch(url, options = {}) {
 
     if (res.status === 401) {
         localStorage.removeItem("access_token");
+        localStorage.removeItem("user");
         window.location.href = "/login/";
-        return;
+        throw new Error("Unauthorized");
     }
 
     if (res.status === 403) {
         alert("Bạn không có quyền!");
         window.location.href = "/";
-        return;
+        throw new Error("Forbidden");
     }
-
     return res;
 }
