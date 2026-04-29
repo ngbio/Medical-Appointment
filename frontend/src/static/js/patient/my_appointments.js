@@ -43,6 +43,11 @@ async function loadAppointments(fetchUrl = null) {
 
     const url = fetchUrl || `/appointments/?status=${currentStatus}`;
 
+    if (fetchUrl) {
+        const parsed = new URL(fetchUrl);
+        url = parsed.pathname + parsed.search;
+    }
+
     try {
         const res = await authFetch(url);
         if (!res.ok) throw new Error("Lỗi mạng");
