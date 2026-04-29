@@ -47,10 +47,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     def validate_phone_number(self, value):
         """Validate phone number"""
-        if not value:
+        if value in [None, ""]:
+            if self.partial:
+                return value
             raise ValidationError("Số điện thoại không được để trống!")
+
         if not re.match(r'^[0-9]{10,11}$', value):
             raise ValidationError("Số điện thoại phải là 10-11 chữ số!")
+
         return value
 
     def validate_fullname(self, value):

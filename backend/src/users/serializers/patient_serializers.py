@@ -38,7 +38,8 @@ class PatientProfileSerializer(serializers.ModelSerializer):
             
             if 'user' in getattr(self, 'initial_data', {}):
                 user_serializer.initial_data = self.initial_data['user']
-                
+            
+            user_serializer.partial = True
             user_serializer.update(instance.user, user_data)
 
         return instance
