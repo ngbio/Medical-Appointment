@@ -71,7 +71,9 @@ async function loadDoctors(url) {
 
         const data = await response.json();
         
-        nextPageUrl = data.next; 
+        nextPageUrl = data.next
+            ? new URL(data.next).pathname + new URL(data.next).search
+            : null;
 
         // Render dữ liệu
         const doctors = data.results || [];
