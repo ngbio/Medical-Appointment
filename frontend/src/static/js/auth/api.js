@@ -8,7 +8,7 @@ async function authFetch(url, options = {}) {
 
     if (!token) {
         window.location.href = "/login/";
-        return;
+        throw new Error("No token");
     }
 
     const res = await fetch(url, {
