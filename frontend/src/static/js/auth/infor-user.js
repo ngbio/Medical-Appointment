@@ -1,6 +1,7 @@
 const PROFILE_API_URL = '/patients/me/'; 
 let editModalInstance = null;
 
+let originalProfile = {};
 
 document.addEventListener("DOMContentLoaded", () => {
     // Khởi tạo modal
@@ -35,6 +36,14 @@ async function loadPatientProfile() {
 
         const data = await res.json();
         const user = data.user || {}; 
+
+        originalProfile = {
+            fullname: user.fullname || '',
+            phone_number: user.phone_number || '',
+            gender: user.gender || '',
+            dob: data.dob || '',
+            address: data.address || ''
+        };
 
         const avatarEl = document.getElementById('userAvatar');
         if (avatarEl) avatarEl.src = user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullname || user.username || 'U')}`;
@@ -105,16 +114,38 @@ async function handleUpdateProfile(e) {
     const dob = document.getElementById('inputDob').value;
     const address = document.getElementById('inputAddress').value.trim();
 
-    if (fullname) userPayload.fullname = fullname;
-    if (phone) userPayload.phone_number = phone;
-    if (gender) userPayload.gender = gender;
+    /* CHỈ GỬI FIELD THAY ĐỔI */
+    if (fullname !== originalProfile.fullname) {
+        userPayload.fullname = fullname;
+    }
+
+    if (phone !== originalProfile.phone_number) {
+        userPayload.phone_number = phone;
+    }
+
+    if (gender !== originalProfile.gender) {
+        userPayload.gender = gender;
+    }
 
     if (Object.keys(userPayload).length > 0) {
         payload.user = userPayload;
     }
 
-    if (dob) payload.dob = dob;
-    if (address) payload.address = address;
+    if (dob !== originalProfile.dob) {
+        payload.dob = dob;
+    }
+
+    if (address !== originalProfile.address) {
+        payload.address = address;
+    }
+
+    /* Không có gì thay đổi */
+    if (Object.keys(payload).length === 0) {
+        btnSave.disabled = false;
+        btnSave.innerText = "Lưu thay đổi";
+        if (editModalInstance) editModalInstance.hide();
+        return;
+    }
 
     try {
         const res = await authFetch(PROFILE_API_URL, {
@@ -129,7 +160,7 @@ async function handleUpdateProfile(e) {
 
         // Ẩn modal và reload thông tin
         if (editModalInstance) editModalInstance.hide();
-        loadPatientProfile(); 
+        await loadPatientProfile(); 
         
     } catch (error) {
         console.error("Lỗi cập nhật:", error);

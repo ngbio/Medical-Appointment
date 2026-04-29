@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ("id", "username", "password", "fullname", "email", "phone_number", "gender", "role")
 
         extra_kwargs = {
-            "password": {"write_only": True, "required": True},
+            "password": {"write_only": True, },
             "role": {"read_only": True, },
         }
 
@@ -49,6 +49,8 @@ class UserSerializer(serializers.ModelSerializer):
     def validate_phone_number(self, value):
         """Validate phone number"""
         if value in [None, ""]:
+            if self.partial:
+                return value
             raise ValidationError("Số điện thoại không được để trống!")
 
         if not re.match(r'^[0-9]{10,11}$', value):

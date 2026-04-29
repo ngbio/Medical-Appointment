@@ -4,12 +4,18 @@ from users.serializers.user_serializers import UserSerializer
 from datetime import date
 
 class PatientProfileSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserSerializer(required=False)
 
     class Meta:
         model = PatientProfile
         fields = ['id', 'user', 'address', 'dob']
         read_only_fields = ['id']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.partial:
+            self.fields["user"].partial = True
 
     def validate_dob(self, value):
         if value and value > date.today():
