@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadAppointments(fetchUrl = null) {
     const listEl = document.getElementById('appointment-list');
 
-    const url = fetchUrl || `/appointments/?status=${currentStatus}`;
+    let url = fetchUrl || `/appointments/?status=${currentStatus}`;
 
     if (fetchUrl) {
         const parsed = new URL(fetchUrl);
