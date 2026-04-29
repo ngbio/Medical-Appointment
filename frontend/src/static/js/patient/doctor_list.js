@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function loadSpecialties() {
     try {
-        const response = await authFetch(SPECIALTY_API_BASE);
+        const response = await fetch(SPECIALTY_API_BASE);
 
         if (!response.ok) throw new Error("Lỗi tải danh sách chuyên khoa");
 
@@ -66,7 +66,7 @@ async function loadDoctors(url) {
     loadMoreContainer.classList.add('d-none');
 
     try {
-        const response = await authFetch(url);
+        const response = await fetch(url);
         if (!response.ok) throw new Error("Lỗi tải dữ liệu bác sĩ");
 
         const data = await response.json();
