@@ -65,9 +65,14 @@
                                 oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
                                 required>
                         </div>
-                       <div class="col-md-6 mb-3">
+                        <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Giới tính</label>
-                            <input type="text" class="form-control bg-light" id="inputGender">
+
+                            <select class="form-select" id="inputGender">
+                                <option value="">-- Chọn giới tính --</option>
+                                <option value="male">Nam</option>
+                                <option value="female">Nữ</option>
+                            </select>
                         </div>
                     </div>
 
