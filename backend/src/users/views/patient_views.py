@@ -67,12 +67,15 @@ class PatientProfileViewSet(viewsets.GenericViewSet,
 
     @action(methods=['get', 'patch'], detail=False, url_path='me')
     def me(self, request):
-        profile = self.get_object()
+        try:
+            profile = PatientProfile.objects.select_related("user").get(user=request.user)
+        
+        except PatientProfile.DoesNotExist:
+            raise NotFound("Patient profile not found.")
 
         if request.method == 'GET':
             serializer = self.get_serializer(profile)
             return Response(serializer.data)
-
 
         serializer = self.get_serializer(
             profile,

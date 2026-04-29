@@ -1,13 +1,6 @@
 const PROFILE_API_URL = '/patients/me/'; 
 let editModalInstance = null;
 
-function getAuthHeaders() {
-    const token = localStorage.getItem("access_token");
-    return {
-        'Authorization': token ? `Bearer ${token}` : '',
-        'Content-Type': 'application/json'
-    };
-}
 
 document.addEventListener("DOMContentLoaded", () => {
     // Khởi tạo modal
@@ -35,14 +28,8 @@ async function loadPatientProfile() {
     }
 
     try {
-        const res = await fetch(PROFILE_API_URL, { headers: getAuthHeaders() });
+        const res = await authFetch(PROFILE_API_URL);
         
-        if (res.status === 401 || res.status === 403) {
-            localStorage.removeItem('access_token');
-            alert("Phiên đăng nhập hết hạn.");
-            window.location.href = "/login";
-            return;
-        }
 
         if (!res.ok) throw new Error("Không thể tải thông tin");
 
@@ -120,9 +107,8 @@ async function handleUpdateProfile(e) {
     };
 
     try {
-        const res = await fetch(PROFILE_API_URL, {
+        const res = await authFetch(PROFILE_API_URL, {
             method: 'PATCH',
-            headers: getAuthHeaders(),
             body: JSON.stringify(payload)
         });
 
