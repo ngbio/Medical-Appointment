@@ -1,9 +1,8 @@
 from rest_framework import serializers
-from users.models import RoleEnum, PatientProfile, User
+from users.models import User
 from django.db import transaction
 from rest_framework.exceptions import ValidationError
 import re
-from django.conf import settings
 from users.tasks import send_email_confirmation
 
 
@@ -33,7 +32,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     def validate_password(self, value):
         """Validate password"""
-        if not value:
+        if value is None:
+            return value
+        if value == "":
             raise ValidationError("Mật khẩu không được để trống!")
         if len(value) < 6:
             raise ValidationError("Mật khẩu phải ít nhất 6 ký tự!")
@@ -47,10 +48,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     def validate_phone_number(self, value):
         """Validate phone number"""
-        if not value:
+        if value in [None, ""]:
+            if self.partial:
+                return value
             raise ValidationError("Số điện thoại không được để trống!")
+
         if not re.match(r'^[0-9]{10,11}$', value):
             raise ValidationError("Số điện thoại phải là 10-11 chữ số!")
+
         return value
 
     def validate_fullname(self, value):
@@ -58,13 +63,12 @@ class UserSerializer(serializers.ModelSerializer):
         if value and len(value) > 255:
             raise ValidationError("Họ tên không được vượt quá 255 ký tự!")
         return value
-
-    def validate(self, data):
-        """Validate entire data"""
-        if 'gender' in data and data['gender'] not in dict(data.get('gender', 'choices', [])):
-            if data['gender'] not in ['male', 'female']:
-                raise ValidationError({"gender": "Giới tính không hợp lệ! Chọn 'male' hoặc 'female'"})
-        return data
+    
+    def validate_gender(self, value):
+        """Validate gender"""
+        if value not in ['male', 'female']:
+            raise ValidationError("Giới tính không hợp lệ!")
+        return value
 
 
     def to_representation(self, instance):
@@ -111,9 +115,12 @@ class UserSerializer(serializers.ModelSerializer):
             instance.save()
 
         # update other fields
-        allowed_fields = {"fullname", "email", "phone_number"}
+        allowed_fields = {"fullname", "email", "phone_number", "gender"}
 
         if set(validated_data.keys()) - allowed_fields:
             raise ValidationError({"error": "THIS FIELD CANNOT BE UPDATED"})
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
 
-        return super().update(instance, validated_data)
+        instance.save()
+        return instance

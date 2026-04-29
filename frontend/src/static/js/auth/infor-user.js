@@ -1,6 +1,8 @@
 const PROFILE_API_URL = '/patients/me/'; 
 let editModalInstance = null;
 
+let originalProfile = {};
+
 document.addEventListener("DOMContentLoaded", () => {
     // Khởi tạo modal
     const modalEl = document.getElementById('editProfileModal');
@@ -29,10 +31,19 @@ async function loadPatientProfile() {
     try {
         const res = await authFetch(PROFILE_API_URL);
         
+
         if (!res.ok) throw new Error("Không thể tải thông tin");
 
         const data = await res.json();
         const user = data.user || {}; 
+
+        originalProfile = {
+            fullname: user.fullname || '',
+            phone_number: user.phone_number || '',
+            gender: user.gender || '',
+            dob: data.dob || '',
+            address: data.address || ''
+        };
 
         const avatarEl = document.getElementById('userAvatar');
         if (avatarEl) avatarEl.src = user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullname || user.username || 'U')}`;
@@ -68,8 +79,7 @@ async function loadPatientProfile() {
         
        const inputGender = document.getElementById('inputGender');
         if (inputGender) {
-            const genderText = genderMap[user.gender?.toLowerCase()] || user.gender || 'Chưa cập nhật';
-            inputGender.value = genderText;
+            inputGender.value = user.gender || '';
         }
         
         const inputDob = document.getElementById('inputDob');
@@ -95,19 +105,51 @@ async function handleUpdateProfile(e) {
     alertBox.classList.add('d-none');
 
     // Gom data theo nested serializer của Backend
-    const payload = {
-        dob: document.getElementById('inputDob').value || null,
-        address: document.getElementById('inputAddress').value || "",
-        user: {
-            fullname: document.getElementById('inputFullname').value,
-            phone_number: document.getElementById('inputPhone').value,
-        }
-    };
+    const payload = {};
+    const userPayload = {};
+
+    const fullname = document.getElementById('inputFullname').value.trim();
+    const phone = document.getElementById('inputPhone').value.trim();
+    const gender = document.getElementById('inputGender').value.trim();
+    const dob = document.getElementById('inputDob').value;
+    const address = document.getElementById('inputAddress').value.trim();
+
+    /* CHỈ GỬI FIELD THAY ĐỔI */
+    if (fullname !== originalProfile.fullname) {
+        userPayload.fullname = fullname;
+    }
+
+    if (phone !== originalProfile.phone_number) {
+        userPayload.phone_number = phone;
+    }
+
+    if (gender !== originalProfile.gender) {
+        userPayload.gender = gender;
+    }
+
+    if (Object.keys(userPayload).length > 0) {
+        payload.user = userPayload;
+    }
+
+    if (dob !== originalProfile.dob) {
+        payload.dob = dob;
+    }
+
+    if (address !== originalProfile.address) {
+        payload.address = address;
+    }
+
+    /* Không có gì thay đổi */
+    if (Object.keys(payload).length === 0) {
+        btnSave.disabled = false;
+        btnSave.innerText = "Lưu thay đổi";
+        if (editModalInstance) editModalInstance.hide();
+        return;
+    }
 
     try {
         const res = await authFetch(PROFILE_API_URL, {
             method: 'PATCH',
-            headers: getAuthHeaders(),
             body: JSON.stringify(payload)
         });
 
@@ -118,7 +160,7 @@ async function handleUpdateProfile(e) {
 
         // Ẩn modal và reload thông tin
         if (editModalInstance) editModalInstance.hide();
-        loadPatientProfile(); 
+        await loadPatientProfile(); 
         
     } catch (error) {
         console.error("Lỗi cập nhật:", error);
