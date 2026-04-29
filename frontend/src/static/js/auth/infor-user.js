@@ -97,14 +97,25 @@ async function handleUpdateProfile(e) {
     alertBox.classList.add('d-none');
 
     // Gom data theo nested serializer của Backend
-    const payload = {
-        dob: document.getElementById('inputDob').value || null,
-        address: document.getElementById('inputAddress').value || "",
-        user: {
-            fullname: document.getElementById('inputFullname').value,
-            phone_number: document.getElementById('inputPhone').value,
-        }
-    };
+    const payload = {};
+    const userPayload = {};
+
+    const fullname = document.getElementById('inputFullname').value.trim();
+    const phone = document.getElementById('inputPhone').value.trim();
+    const gender = document.getElementById('inputGender').value.trim();
+    const dob = document.getElementById('inputDob').value;
+    const address = document.getElementById('inputAddress').value.trim();
+
+    if (fullname) userPayload.fullname = fullname;
+    if (phone) userPayload.phone_number = phone;
+    if (gender) userPayload.gender = gender;
+
+    if (Object.keys(userPayload).length > 0) {
+        payload.user = userPayload;
+    }
+
+    if (dob) payload.dob = dob;
+    if (address) payload.address = address;
 
     try {
         const res = await authFetch(PROFILE_API_URL, {
