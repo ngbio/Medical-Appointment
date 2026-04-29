@@ -5,6 +5,6 @@
     },
     {
         "name": "Bác sĩ",
-        "url": "/doctors"
+        "url": "/doctor_list"
     }
 ]
