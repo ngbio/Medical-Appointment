@@ -115,7 +115,7 @@ class UserSerializer(serializers.ModelSerializer):
             instance.save()
 
         # update other fields
-        allowed_fields = {"fullname", "email", "phone_number"}
+        allowed_fields = {"fullname", "email", "phone_number", "gender"}
 
         if set(validated_data.keys()) - allowed_fields:
             raise ValidationError({"error": "THIS FIELD CANNOT BE UPDATED"})

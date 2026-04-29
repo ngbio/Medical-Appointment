@@ -70,8 +70,7 @@ async function loadPatientProfile() {
         
        const inputGender = document.getElementById('inputGender');
         if (inputGender) {
-            const genderText = genderMap[user.gender?.toLowerCase()] || user.gender || 'Chưa cập nhật';
-            inputGender.value = genderText;
+            inputGender.value = user.gender || '';
         }
         
         const inputDob = document.getElementById('inputDob');
