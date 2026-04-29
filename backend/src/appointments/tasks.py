@@ -1,7 +1,7 @@
 from celery import shared_task
 from django.core.mail import send_mail
 from django.conf import settings
-from appointments.models import Appointment
+from appointments.models import Appointment, AppointmentStatus
 from django.utils import timezone
 from datetime import timedelta
 import logging
@@ -14,8 +14,16 @@ def send_appointment_confirmation(self, appointment_id):
     Gửi email xác nhận lịch hẹn
     """
     try:
-        appointment = Appointment.objects.get(id=appointment_id)
+        # appointment = Appointment.objects.get(id=appointment_id)
+        appointment = Appointment.objects.select_related(
+            "patient__user",
+            "doctor__user",
+            "time_slot__schedule"
+        ).get(id=appointment_id)
         user_email = appointment.patient.user.email
+        if not user_email:
+            logger.warning(f"No email for appointment {appointment_id}")
+            return "No email"
         doctor_name = appointment.doctor.user.fullname
         
         subject = f'Xác nhận lịch hẹn với {doctor_name}'
@@ -55,8 +63,17 @@ def send_appointment_reminder(self, appointment_id):
     Gửi reminder 24h trước cuộc hẹn
     """
     try:
-        appointment = Appointment.objects.get(id=appointment_id)
+        # appointment = Appointment.objects.get(id=appointment_id)
+        appointment = Appointment.objects.select_related(
+            "patient__user",
+            "doctor__user",
+            "time_slot__schedule"
+        ).get(id=appointment_id)
+        
         user_email = appointment.patient.user.email
+        if not user_email:
+            logger.warning(f"No email for appointment {appointment_id}")
+            return "No email"
         doctor_name = appointment.doctor.user.fullname
         
         subject = f'Nhắc nhở: Lịch hẹn với {doctor_name} vào ngày mai'
@@ -100,10 +117,14 @@ def send_appointment_reminders():
         tomorrow = now + timedelta(hours=24)
         
         # Lấy tất cả appointments trong 24h tới mà chưa gửi reminder
+        # appointments = Appointment.objects.filter(
+        #     time_slot__gte=now,
+        #     time_slot__lte=tomorrow,
+        #     status='confirmed'
+        # )
         appointments = Appointment.objects.filter(
-            time_slot__gte=now,
-            time_slot__lte=tomorrow,
-            status='confirmed'
+            time_slot__schedule__work_date=tomorrow.date(),
+            status=AppointmentStatus.BOOKED
         )
         
         for appointment in appointments:
@@ -124,9 +145,13 @@ def cleanup_old_appointments():
     try:
         # Ví dụ: Archive appointments cũ hơn 1 năm
         one_year_ago = timezone.now() - timedelta(days=365)
+        # old_appointments = Appointment.objects.filter(
+        #     time_slot__lt=one_year_ago,
+        #     status__in=['cancelled', 'completed']
+        # )
         old_appointments = Appointment.objects.filter(
-            time_slot__lt=one_year_ago,
-            status__in=['cancelled', 'completed']
+            time_slot__schedule__work_date__lt=one_year_ago.date(),
+            status__in=[AppointmentStatus.CANCELED, AppointmentStatus.COMPLETED]
         )
         count = old_appointments.count()
         old_appointments.delete()
