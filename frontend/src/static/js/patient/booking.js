@@ -23,7 +23,7 @@ function formatDate(dateStr) {
   return d.toLocaleDateString('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
-/*Data Loading*/
+
 async function loadSpecialties() {
   const res = await authFetch('/specialties/');
   const data = await res.json();

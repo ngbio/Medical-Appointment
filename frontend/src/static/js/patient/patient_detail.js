@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 });
 
-// Get patient_id from URL
+// lấy patient_id 
 function getPatientId() {
     const path = window.location.pathname; 
     const parts = path.split("/");
@@ -91,7 +91,6 @@ async function viewDetailsAppointment(id) {
         const res = await authFetch(`/appointments/${id}/`);
         const data = await res.json();
 
-        // Fill data
         document.getElementById("modalPatient").innerText = data.patient_name;
         document.getElementById("modalDoctor").innerText = data.doctor_name;
         document.getElementById("modalDate").innerText = data.appointment_date;
@@ -99,7 +98,7 @@ async function viewDetailsAppointment(id) {
         document.getElementById("modalSymptoms").innerText = data.symptoms || "-";
         document.getElementById("modalStatus").innerText = data.status;
 
-        // Bootstrap show modal
+        //show modal
         const modal = new bootstrap.Modal(document.getElementById('appointmentModal'));
         modal.show();
 
