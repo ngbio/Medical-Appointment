@@ -29,6 +29,7 @@ WORKDIR /app/backend/src
 
 # Create entrypoint script
 COPY docker-entrypoint.sh /app/
+
 RUN chmod +x /app/docker-entrypoint.sh
 
 # Run Django app (default)

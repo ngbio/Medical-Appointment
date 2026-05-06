@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+  db:
+    image: mysql:8
+    container_name: medical_mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - medical_network
   rabbitmq:
     image: rabbitmq:3.13-management-alpine
     container_name: medical_appointment_rabbitmq
@@ -47,6 +60,8 @@ services:
     env_file:
       - .env
     depends_on:
+      db:
+        condition: service_started
       rabbitmq:
         condition: service_healthy
     networks:
@@ -77,6 +92,8 @@ services:
     env_file:
       - .env
     depends_on:
+      db:
+        condition: service_started
       rabbitmq:
         condition: service_healthy
     networks:
@@ -115,6 +132,7 @@ services:
 
 volumes:
   static_volume:
+  db_data:
 
 networks:
   medical_network:

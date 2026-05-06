@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Skip DB check - just wait a bit for MySQL to be ready
 echo "Giving database time to be ready..."
@@ -39,4 +39,3 @@ else
     echo "Starting Django Server..."
     exec python manage.py runserver 0.0.0.0:8000
 fi
-

@@ -43,9 +43,9 @@ async function login() {
         formData.append("password", password);
 
         const basicAuth = btoa(
-            "8R8QAx9e2sS9VsXLLvZmSdNjLOZlp6mCBU0AxTII" +
+            "ixMj1leprQBGKdWuN9W5oHgoaHjvDRZyJF0Vrie1" +
             ":" +
-            "ln00VPl380MedoLkaqg54Dde3byjZuAdca7U3F96d8jKZuusQhr91glm2UssSiZImNxlTpaiZK7CMJiMCemuxBv8IrqlFpAMAGBvlVSbzS72QqP3dLh1TYVYefNGvBc9"
+            "qiqieoOL8tsHwMhuluVMujSC2J4vlsBzJrtMj6QqQkCzNrEkpf9pMOMeRdLnPV9rUL94bwFonfGibL8IUNvVR1WJw4hQ6WGvbN7bBwnGoiqUCdf5AqcdhkbyGEzQiI5o"
         );
 
         const response = await fetch("/o/token/", {
