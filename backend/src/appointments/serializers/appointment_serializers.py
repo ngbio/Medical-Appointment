@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.db import transaction
 from django.utils import timezone
 from appointments.models import Appointment, AppointmentStatus
+from appointments.tasks import send_appointment_confirmation, send_appointment_reminder
 from doctors.models import SlotStatus, TimeSlot # Thêm TimeSlot vào đây
 
 class AppointmentSerializer(serializers.ModelSerializer):
@@ -72,5 +73,9 @@ class AppointmentSerializer(serializers.ModelSerializer):
             
             time_slot.status = SlotStatus.BOOKED
             time_slot.save(update_fields=['status'])
+
+        # Send confirmation email asynchronously
+        send_appointment_confirmation.delay(appointment.id)
+        send_appointment_reminder.delay(appointment.id)
 
         return appointment
