@@ -60,7 +60,7 @@ def create_user(username, password, role, gender, fullname, phone):
     if created:
         user.set_password(password)
         user.save()
-        print(f"✅ Created user: {username}")
+        print(f"Created user: {username}")
 
     return user
 
@@ -172,4 +172,4 @@ for i, slot in enumerate(slots):
         )
     )
 
-print("🎉 HOÀN TẤT! DATA ĐÃ SẴN SÀNG.")
+print(" HOÀN TẤT! DATA ĐÃ SẴN SÀNG.")

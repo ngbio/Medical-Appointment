@@ -24,7 +24,7 @@ async function loadPatientProfile() {
     const token = localStorage.getItem("access_token");
     if (!token) {
         alert("Vui lòng đăng nhập!");
-        window.location.href = "/login"; // Đổi link này theo trang login của bạn
+        window.location.href = "/login"; 
         return;
     }
 
@@ -104,7 +104,7 @@ async function handleUpdateProfile(e) {
     btnSave.innerText = "Đang lưu...";
     alertBox.classList.add('d-none');
 
-    // Gom data theo nested serializer của Backend
+    // gom data 
     const payload = {};
     const userPayload = {};
 
@@ -114,7 +114,7 @@ async function handleUpdateProfile(e) {
     const dob = document.getElementById('inputDob').value;
     const address = document.getElementById('inputAddress').value.trim();
 
-    /* CHỈ GỬI FIELD THAY ĐỔI */
+    //cap nhat field thay doi
     if (fullname !== originalProfile.fullname) {
         userPayload.fullname = fullname;
     }
@@ -139,7 +139,7 @@ async function handleUpdateProfile(e) {
         payload.address = address;
     }
 
-    /* Không có gì thay đổi */
+    //neu ko có gi thay doi
     if (Object.keys(payload).length === 0) {
         btnSave.disabled = false;
         btnSave.innerText = "Lưu thay đổi";
@@ -158,7 +158,7 @@ async function handleUpdateProfile(e) {
             throw new Error(JSON.stringify(errorData));
         }
 
-        // Ẩn modal và reload thông tin
+        //ẩn modal và reload thông tin
         if (editModalInstance) editModalInstance.hide();
         await loadPatientProfile(); 
         
