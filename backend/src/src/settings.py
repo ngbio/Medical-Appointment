@@ -12,10 +12,19 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+
+def env_list(name, default=''):
+    return [item.strip() for item in os.environ.get(name, default).split(',') if item.strip()]
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 PROJECT_ROOT = BASE_DIR.parent.parent  # Go to Medical-Appointment root
+
+# Load .env from project root
+ENV_PATH = PROJECT_ROOT / '.env'
+load_dotenv(ENV_PATH)
 USE_CLOUDINARY = True
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
@@ -25,13 +34,19 @@ DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-i-l5m3xf@uwl$3zsesw7*f9!f-e^l42(6jesw&%w+dcb!7egti'
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = 'django-insecure-dev-only-change-me'
+    else:
+        raise ValueError('SECRET_KEY environment variable is required when DEBUG=False')
+
+ALLOWED_HOSTS = env_list('ALLOWED_HOSTS', 'localhost,127.0.0.1')
+CSRF_TRUSTED_ORIGINS = env_list('CSRF_TRUSTED_ORIGINS')
 
 
 # Application definition
@@ -52,16 +67,16 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'users',
     'doctors',
-    'appointments',
+    'appointments.apps.AppointmentsConfig',
     'notifications',
     'corsheaders',
 
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -70,7 +85,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = env_list('CORS_ALLOWED_ORIGINS', 'http://localhost:3000')
+CORS_ALLOW_ALL_ORIGINS = False
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('oauth2_provider.contrib.rest_framework.OAuth2Authentication',),
@@ -78,12 +94,13 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 5,
 }
 
+import cloudinary
 import cloudinary.api
 
 cloudinary.config(
-    cloud_name='dprwsgoeg',
-    api_key='561165731845827',
-    api_secret='dUWu7WiILETcjr_Sn8sicQhhiW0'
+    cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.environ.get('CLOUDINARY_API_KEY'),
+    api_secret=os.environ.get('CLOUDINARY_API_SECRET')
 )
 
 CKEDITOR_UPLOAD_PATH = "images/ckeditors/"
@@ -114,14 +131,23 @@ WSGI_APPLICATION = 'src.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+mysql_options = {
+    'charset': 'utf8mb4',
+}
+
+if os.environ.get('MYSQL_SSL_CA'):
+    mysql_options['ssl'] = {'ca': os.environ.get('MYSQL_SSL_CA')}
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.mysql'),
         'NAME': os.environ.get('DB_NAME', 'medicaldb'),
         'USER': os.environ.get('DB_USER', 'root'),
         'PASSWORD': os.environ.get('DB_PASSWORD', 'root'),
         'HOST': os.environ.get('DB_HOST', 'localhost'),
         'PORT': os.environ.get('DB_PORT', '3306'),
+        'OPTIONS': mysql_options,
+        'CONN_MAX_AGE': int(os.environ.get('DB_CONN_MAX_AGE', '600')),
     }
 }
 
@@ -171,15 +197,11 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-CLIENT_ID = 'ixMj1leprQBGKdWuN9W5oHgoaHjvDRZyJF0Vrie1'
-CLIENT_SECRET = 'qiqieoOL8tsHwMhuluVMujSC2J4vlsBzJrtMj6QqQkCzNrEkpf9pMOMeRdLnPV9rUL94bwFonfGibL8IUNvVR1WJw4hQ6WGvbN7bBwnGoiqUCdf5AqcdhkbyGEzQiI5o'
 
 # Email (SMTP) - can set via environment variables
 EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
@@ -208,3 +230,13 @@ CELERY_BEAT_SCHEDULE = {
     # },
 }
 
+# ============= SECURITY FOR PRODUCTION =============
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'True') == 'True'
+    SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'True') == 'True'
+    CSRF_COOKIE_SECURE = os.environ.get('CSRF_COOKIE_SECURE', 'True') == 'True'
+    SECURE_HSTS_SECONDS = int(os.environ.get('SECURE_HSTS_SECONDS', '31536000'))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get('SECURE_HSTS_INCLUDE_SUBDOMAINS', 'True') == 'True'
+    SECURE_HSTS_PRELOAD = os.environ.get('SECURE_HSTS_PRELOAD', 'True') == 'True'
+    SECURE_BROWSER_XSS_FILTER = True
