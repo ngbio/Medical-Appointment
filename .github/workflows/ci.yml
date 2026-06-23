@@ -64,3 +64,4 @@ jobs:
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
           docker build . -t $IMAGE_ID:latest
           docker push $IMAGE_ID:latest
+

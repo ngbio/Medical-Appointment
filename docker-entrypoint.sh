@@ -4,9 +4,9 @@
 echo "Giving database time to be ready..."
 sleep 5
 
-# Try migrations but don't block
+# Run migrations before starting the service.
 echo "Running migrations..."
-python manage.py migrate --noinput 2>&1 || true
+python manage.py migrate --noinput
 
 # Collect static files (optional)
 if [ "$SKIP_COLLECTSTATIC" != "True" ]; then
@@ -16,7 +16,8 @@ else
     echo "Skipping collectstatic..."
 fi
 
-python manage.py shell -c "
+if [ -n "$DJANGO_SUPERUSER_USERNAME" ] && [ -n "$DJANGO_SUPERUSER_EMAIL" ] && [ -n "$DJANGO_SUPERUSER_PASSWORD" ]; then
+    python manage.py shell -c "
 from django.contrib.auth import get_user_model
 User = get_user_model()
 if not User.objects.filter(username='$DJANGO_SUPERUSER_USERNAME').exists():
@@ -25,8 +26,12 @@ if not User.objects.filter(username='$DJANGO_SUPERUSER_USERNAME').exists():
 else:
     print('Superuser already exists')
 "
+fi
 
-python data.py
+if [ "$LOAD_DEMO_DATA" = "True" ]; then
+    echo "Loading demo data..."
+    python data.py
+fi
 
 # Run the appropriate service based on CELERY_COMMAND env var
 if [ "$CELERY_COMMAND" = "worker" ]; then
@@ -37,5 +42,5 @@ elif [ "$CELERY_COMMAND" = "beat" ]; then
     exec celery -A src beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
 else
     echo "Starting Django Server..."
-    exec python manage.py runserver 0.0.0.0:8000
+    exec gunicorn src.wsgi:application --bind 0.0.0.0:${PORT:-8000} --log-file -
 fi
