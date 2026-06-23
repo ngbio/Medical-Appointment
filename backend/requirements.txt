@@ -32,3 +32,6 @@ kombu==5.3.2
 redis==5.0.1
 django-celery-beat==2.6.0
 flower==2.0.1
+gunicorn==23.0.0
+python-dotenv==1.0.1
+whitenoise==6.6.0

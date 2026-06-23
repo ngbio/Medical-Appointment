@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="/apps (snapshot).py">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="/apps (snapshot).py" />
+              <option name="originalContent" value="from django.apps import AppConfig&#10;&#10;&#10;class AppointmentsConfig(AppConfig):&#10;    default_auto_field = 'django.db.models.BigAutoField'&#10;    name = 'appointments'&#10;" />
+              <option name="updatedContent" value="from django.apps import AppConfig&#13;&#10;&#13;&#10;&#13;&#10;class AppointmentsConfig(AppConfig):&#13;&#10;    default_auto_field = 'django.db.models.BigAutoField'&#13;&#10;    name = 'appointments'&#13;&#10;&#13;&#10;    def ready(self):&#13;&#10;        from . import signals  # noqa: F401" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
