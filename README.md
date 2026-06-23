@@ -94,10 +94,10 @@ docker-compose down
 
 | Dịch vụ | URL |
 |---|---|
-| API endpoints | https://medical-appointment-q26y.onrender.com/swwagger/ |
-| Frontend | https://medical-appointment-q26y.onrender.com/index/ |
-| Django Admin | https://medical-appointment-q26y.onrender.com/admin/ |
-| Database | MySQL tại `localhost:3306` (database: `medicaldb`) |
+| API endpoints | https://medical-appointment-backend-kcho.onrender.com/swagger/ |
+| Frontend | https://medical-appointment-backend-kcho.onrender.com/index/ |
+| Django Admin | https://medical-appointment-backend-kcho.onrender.com/admin/ |
+| Database | MySQL |
 
 ## Demo
 [![Watch the video](/docs/demo/demo.png)](/docs/demo/Demo.mp4)
