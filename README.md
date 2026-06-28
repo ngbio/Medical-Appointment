@@ -94,9 +94,9 @@ docker-compose down
 
 | Dịch vụ | URL |
 |---|---|
-| API endpoints | https://medical-appointment-backend-kcho.onrender.com/swagger/ |
-| Frontend | https://medical-appointment-backend-kcho.onrender.com/index/ |
-| Django Admin | https://medical-appointment-backend-kcho.onrender.com/admin/ |
+| API endpoints | https://medical-appointment-backend-tq0r.onrender.com/swagger/ |
+| Frontend | https://medical-appointment-backend-tq0r.onrender.com/index/ |
+| Django Admin | https://medical-appointment-backend-tq0r.onrender.com/admin/ |
 | Database | MySQL |
 
 ## Demo
